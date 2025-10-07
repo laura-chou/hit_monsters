@@ -1,0 +1,45 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+section {
+  height: 100%;
+  background-image: url("../images/bg.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.title {
+  text-align: center;
+}
+
+.button {
+  background: linear-gradient(to bottom, #ffa07a, #ff6347);
+  border: none;
+  padding: 15px 30px;
+  font-size: 24px;
+  color: #fff;
+  border-radius: 2em;
+  box-shadow: 0 0.4em #d94f3a;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.button:hover {
+  transform: scale(1.05);
+}
+
+@media (orientation: portrait) {
+  .start-screen {
+    background-image: url("../images/mobile-bg.png");
+  }
+}
