@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/png" href="./images/fist.png">
+  <link rel="stylesheet" href="./css/common.style.css">
   <link rel="stylesheet" href="./css/index.style.css">
   <title>怪獸終結者</title>
 </head>
@@ -14,11 +15,15 @@
       <br/>
       <img src="./images/title2.png">
     </div>
-    <button class="button">開始</button>
+    <div class="action">
+      <button id="start">開始</button>
+    </div>
   </section>
 </body>
 <script src="./js/jquery-3.7.1.min.js"></script>
-<script>
-  
+<script type="module">
+  $("#start").click(() => {
+    location.href = "html/start.html";
+  });
 </script>
 </html>

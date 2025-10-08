@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="../images/fist.png">
+  <link rel="stylesheet" href="../css/common.style.css">
+  <link rel="stylesheet" href="../css/start.styles.css">
+  <title>怪獸終結者</title>
+</head>
+<body>
+  <section>
+    <div class="monster-info">
+      <span>關卡 1</span>
+      <img src="../images/monster1.png">
+      <div class="hp-container">
+        <div class="hp-bar" style="width: 70%;"></div>
+      </div>
+    </div>
+    <table border="2px outset black">
+      <tr>
+          <td class="hole">
+            <div class="head"></div>
+          </td>
+          <td class="hole">
+            <div class="head"></div>
+          </td>
+          <td class="hole">
+            <div class="head"></div>
+          </td>
+      </tr>
+      <tr>
+          <td>
+            <div class="head"></div>
+          </td>
+          <td>
+            <div class="head"></div>
+          </td>
+          <td>
+            <div class="head"></div>
+          </td>
+      </tr>
+      <tr>
+          <td>
+            <div class="head"></div>
+          </td>
+          <td>
+            <div class="head"></div>
+          </td>
+          <td>
+            <div class="head"></div>
+          </td>
+      </tr>
+    </table>
+  </section>
+</body>
+<script src="../js/jquery-3.7.1.min.js"></script>
+<script type="module">
+  const heads = document.getElementsByClassName("head");
+
+  setTimeout(() => {
+    let arr1 = [0,1];
+    for (let i = 0; i < arr1.length; i++) {
+      heads[arr1[i]].classList.add("red");
+      heads[arr1[i]].style.backgroundImage = `url("../images/monster1.png")`;
+    }
+  }, 1000)
+</script>
+</html>

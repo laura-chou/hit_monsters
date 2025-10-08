@@ -1,0 +1,67 @@
+section {
+  height: 100%;
+  background-image: url("../images/start-bg.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.monster-info {
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 5px solid whitesmoke;
+  border-radius: 50%;
+  width: 180px;
+  height: 180px;
+}
+
+.monster-info img {
+  width: 100px;
+}
+
+.monster-info span {
+  font-size: 18px;
+  color: #fff;
+  margin-bottom: 6px;
+  text-shadow: 0 0 4px #ff0000;
+}
+
+.hp-container {
+  width: 90px;
+  height: 12px;
+  border-radius: 5px;
+  margin: 6px auto 0;
+  border: 1px solid #ff0000;
+  overflow: hidden;
+  box-shadow: inset 0 0 4px #ff0000;
+  margin: 6px 0;
+}
+
+.hp-bar {
+  height: 100%;
+  background-color: #ff3333;
+  transition: width 0.3s ease;
+}
+
+.red {
+  background-image: "";
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  width: 100px;
+  height: 100px;
+  /* animation: appear 1.5s ease;
+  -webkit-animation: appear 1.5s ease;
+  animation-iteration-count: 1; */
+}
+
+@media (orientation: portrait) {
+  section {
+    background-image: url("../images/mobile-start-bg.png");
+  }
+}
