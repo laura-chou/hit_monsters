@@ -7,6 +7,7 @@ section {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: space-around;
 }
 
 .monster-info {
@@ -19,6 +20,7 @@ section {
   border-radius: 50%;
   width: 180px;
   height: 180px;
+  margin: 10px 0;
 }
 
 .monster-info img {
@@ -49,15 +51,44 @@ section {
   transition: width 0.3s ease;
 }
 
-.red {
-  background-image: "";
+table td {
+  width: 120px;
+  height: 120px;
+  vertical-align: middle;
+  text-align: -webkit-center;
+  overflow: hidden;
+  cursor: url("../images/cursor-fist.png") 45 45, auto;
+}
+
+.head:active {
+  cursor: url("../images/cursor-punch.png") 45 45, auto;
+}
+
+.appear {
   background-size: 100% 100%;
   background-repeat: no-repeat;
   width: 100px;
   height: 100px;
-  /* animation: appear 1.5s ease;
-  -webkit-animation: appear 1.5s ease;
-  animation-iteration-count: 1; */
+  animation: appearEffect 1.5s ease;
+  -webkit-animation: appearEffect 1.5s ease;
+  animation-iteration-count: 1;
+}
+
+.hit {
+  filter: saturate(7);
+  animation: hitImpact 0.4s ease;
+}
+
+@keyframes hitImpact {
+  0%   { transform: scale(1) rotate(0deg); }
+  50%  { transform: scale(1.2) rotate(-5deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+@keyframes appearEffect {
+  0% { transform: translateY(110%); }
+  50% { transform: translateY(0%); }
+  100% { transform: translateY(110%); }
 }
 
 @media (orientation: portrait) {

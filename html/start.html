@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/png" href="../images/fist.png">
+  <link rel="icon" type="image/png" href="../images/icon.png">
   <link rel="stylesheet" href="../css/common.style.css">
   <link rel="stylesheet" href="../css/start.styles.css">
   <title>怪獸終結者</title>
@@ -19,13 +19,13 @@
     </div>
     <table border="2px outset black">
       <tr>
-          <td class="hole">
+          <td>
             <div class="head"></div>
           </td>
-          <td class="hole">
+          <td>
             <div class="head"></div>
           </td>
-          <td class="hole">
+          <td>
             <div class="head"></div>
           </td>
       </tr>
@@ -56,14 +56,32 @@
 </body>
 <script src="../js/jquery-3.7.1.min.js"></script>
 <script type="module">
+  import { randNumberWithMin } from "../js/common.js";
+  import { playAudioEffect } from "../js/start.js";
   const heads = document.getElementsByClassName("head");
 
-  setTimeout(() => {
-    let arr1 = [0,1];
-    for (let i = 0; i < arr1.length; i++) {
-      heads[arr1[i]].classList.add("red");
-      heads[arr1[i]].style.backgroundImage = `url("../images/monster1.png")`;
+  let lastIndex = -1;
+
+  setInterval(() => {
+    for (let head of heads) {
+      head.classList.remove("appear", "hit");
     }
-  }, 1000)
+
+    let newIndex;
+    do {
+      newIndex = randNumberWithMin(0, heads.length-1);
+    } while (newIndex === lastIndex);
+
+    lastIndex = newIndex;
+
+    heads[newIndex].classList.add("appear");
+    heads[newIndex].style.backgroundImage = `url("../images/monster1.png")`;
+  }, 1500);
+
+  $(".head").on("click", (event) => {
+    playAudioEffect("hit");
+    const clickedElement = $(event.target);
+    clickedElement.addClass("hit");
+  });
 </script>
 </html>
