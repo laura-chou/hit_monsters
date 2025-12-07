@@ -8,80 +8,123 @@
   <link rel="stylesheet" href="../css/start.styles.css">
   <title>怪獸終結者</title>
 </head>
-<body>
+<body onselectstart="return false">
   <section>
+    <div class="countdown-wrapper">
+      <span class="level-label">關卡 1</span>
+      <span id="timer">10</span>
+    </div>
     <div class="monster-info">
-      <span>關卡 1</span>
       <img src="../images/monster1.png">
       <div class="hp-container">
-        <div class="hp-bar" style="width: 70%;"></div>
+        <div class="hp-bar" style="width: 100%;"></div>
       </div>
     </div>
-    <table border="2px outset black">
-      <tr>
-          <td>
-            <div class="head"></div>
-          </td>
-          <td>
-            <div class="head"></div>
-          </td>
-          <td>
-            <div class="head"></div>
-          </td>
-      </tr>
-      <tr>
-          <td>
-            <div class="head"></div>
-          </td>
-          <td>
-            <div class="head"></div>
-          </td>
-          <td>
-            <div class="head"></div>
-          </td>
-      </tr>
-      <tr>
-          <td>
-            <div class="head"></div>
-          </td>
-          <td>
-            <div class="head"></div>
-          </td>
-          <td>
-            <div class="head"></div>
-          </td>
-      </tr>
-    </table>
+    <div class="select-number"></div>
+    <div class="playground">
+      <table border="5px outset black">
+        <tr>
+            <td value=0>
+              <div class="head"></div>
+            </td>
+            <td value=1>
+              <div class="head"></div>
+            </td>
+            <td value=2>
+              <div class="head"></div>
+            </td>
+        </tr>
+        <tr>
+            <td value=3>
+              <div class="head"></div>
+            </td>
+            <td value=4>
+              <div class="head"></div>
+            </td>
+            <td value=5>
+              <div class="head"></div>
+            </td>
+        </tr>
+        <tr>
+            <td value=6>
+              <div class="head"></div>
+            </td>
+            <td value=7>
+              <div class="head"></div>
+            </td>
+            <td value=8>
+              <div class="head"></div>
+            </td>
+        </tr>
+      </table>
+    </div>
   </section>
 </body>
 <script src="../js/jquery-3.7.1.min.js"></script>
 <script type="module">
   import { randNumberWithMin } from "../js/common.js";
   import { playAudioEffect } from "../js/start.js";
-  const heads = document.getElementsByClassName("head");
-
-  let lastIndex = -1;
+  import { startCountdown } from "../js/timer.js";
+  startCountdown(30)
+  let isMonsterActive = true;
+  let selectIndex = [];
+  let appearIndex = [1,2,2];
+  let monsterHp = 100;
 
   setInterval(() => {
-    for (let head of heads) {
-      head.classList.remove("appear", "hit");
+    console.log(isMonsterActive);
+    if (isMonsterActive) {
+      isMonsterActive = false;
+      appearIndex = getUniqueRandoms(3, $(".head").length - 1);
+      appearIndex.forEach((idx, i) => {
+        const appearTime = (i + 1) * 1000;
+        const duration = 1000;
+        
+        setTimeout(() => {
+          console.log(idx);
+          $(".head").eq(idx)
+            .addClass("appear")
+            .css("background-image", 'url("../images/monster1.png")');
+
+          setTimeout(() => {
+            $(".head").eq(idx).removeClass("appear");
+          }, duration);
+        }, appearTime);
+      });
     }
+  }, 1000)
 
-    let newIndex;
-    do {
-      newIndex = randNumberWithMin(0, heads.length-1);
-    } while (newIndex === lastIndex);
+  const getUniqueRandoms = (count, max) => {
+    let arr = Array.from({length: max + 1}, (_, i) => i);
+    arr.sort(() => Math.random() - 0.5);
+    return arr.slice(0, count);
+  }
 
-    lastIndex = newIndex;
-
-    heads[newIndex].classList.add("appear");
-    heads[newIndex].style.backgroundImage = `url("../images/monster1.png")`;
-  }, 1500);
-
-  $(".head").on("click", (event) => {
-    playAudioEffect("hit");
-    const clickedElement = $(event.target);
-    clickedElement.addClass("hit");
+  $("td").on("click", (event) => {
+    if (!isMonsterActive) {
+      if (selectIndex.length !== appearIndex.length) {
+        selectIndex.push(parseInt($(event.target).attr("value")));
+      }
+      const showToPlayer = selectIndex.map(x => x + 1);
+      $(".select-number").text(showToPlayer.join(","))
+      if (selectIndex.length === appearIndex.length) {
+        setTimeout(() => {
+          if (appearIndex.every((val, idx) => val === selectIndex[idx])) {
+            $(".monster-info img").addClass("hit");
+            monsterHp-=10;
+            $(".hp-bar").css("width", `${monsterHp}%`);
+          } else {
+            $(".monster-info img").addClass("monster-attack");
+          }
+        }, 1000)
+      }
+      setTimeout(() => {
+        $(".monster-info img").removeClass("hit monster-attack");
+        isMonsterActive = true;
+        $(".select-number").text("")
+        selectIndex.length = 0
+      }, 2000)
+    }
   });
 </script>
 </html>

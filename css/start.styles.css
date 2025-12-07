@@ -1,48 +1,58 @@
-section {
-  height: 100%;
+body {
   background-image: url("../images/start-bg.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  display: flex;
+  justify-content: center;
+}
+
+section {
+  width: 390px;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
 }
 
-.monster-info {
+.countdown-wrapper {
+  width: 100%;
+  height: 10%;
   color: white;
+  font-weight: bold;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.level-label {
+  font-size: 1.5rem;
+}
+
+#timer {
+  font-size: 2.5rem;
+} 
+
+.monster-info {
+  height: 25%;
+  display: flex;
   align-items: center;
   justify-content: center;
-  border: 5px solid whitesmoke;
-  border-radius: 50%;
-  width: 180px;
-  height: 180px;
-  margin: 10px 0;
+  flex-direction: column;
 }
 
 .monster-info img {
   width: 100px;
 }
 
-.monster-info span {
-  font-size: 18px;
-  color: #fff;
-  margin-bottom: 6px;
-  text-shadow: 0 0 4px #ff0000;
-}
-
 .hp-container {
-  width: 90px;
+  width: 250px;
   height: 12px;
   border-radius: 5px;
-  margin: 6px auto 0;
   border: 1px solid #ff0000;
   overflow: hidden;
-  box-shadow: inset 0 0 4px #ff0000;
-  margin: 6px 0;
+  margin-top: 20px;
 }
 
 .hp-bar {
@@ -51,17 +61,27 @@ section {
   transition: width 0.3s ease;
 }
 
+.select-number {
+  height: 20px;
+  color: #fff;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.playground {
+  width: 100%;
+  height: 65%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 table td {
   width: 120px;
   height: 120px;
   vertical-align: middle;
   text-align: -webkit-center;
   overflow: hidden;
-  cursor: url("../images/cursor-fist.png") 45 45, auto;
-}
-
-.head:active {
-  cursor: url("../images/cursor-punch.png") 45 45, auto;
 }
 
 .appear {
@@ -69,8 +89,8 @@ table td {
   background-repeat: no-repeat;
   width: 100px;
   height: 100px;
-  animation: appearEffect 1.5s ease;
-  -webkit-animation: appearEffect 1.5s ease;
+  animation: appearEffect 1s ease;
+  -webkit-animation: appearEffect 1s ease;
   animation-iteration-count: 1;
 }
 
@@ -79,9 +99,20 @@ table td {
   animation: hitImpact 0.4s ease;
 }
 
+.monster-attack {
+  animation: monsterAttackForward 0.5s ease-out;
+}
+
+@keyframes monsterAttackForward {
+  0%   { transform: translateY(0) scale(1); }
+  40%  { transform: translateY(-10px) scale(1.1); }
+  70%  { transform: translateY(20px) scale(1.2); }
+  100% { transform: translateY(0) scale(1); }
+}
+
 @keyframes hitImpact {
   0%   { transform: scale(1) rotate(0deg); }
-  50%  { transform: scale(1.2) rotate(-5deg); }
+  50%  { transform: scale(1.1) rotate(-2deg); }
   100% { transform: scale(1) rotate(0deg); }
 }
 
@@ -92,7 +123,11 @@ table td {
 }
 
 @media (orientation: portrait) {
-  section {
+  body {
     background-image: url("../images/mobile-start-bg.png");
+  }
+
+  section {
+    width: 100%;
   }
 }
