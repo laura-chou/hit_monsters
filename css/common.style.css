@@ -5,3 +5,8 @@ body, html {
   width: 100%;
   overflow: hidden;
 }
+
+.icon {
+  width: 30px;
+  margin-right: .5rem;
+}

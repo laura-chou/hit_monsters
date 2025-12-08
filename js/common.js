@@ -9,6 +9,6 @@ const getPathName = () => {
 export const pathName = getPathName();
 
 export const randNumberWithMin = (min, max) => {
-  const random = Math.random() * (max - min) + min;
-  return Math.round(random);
+  const random = Math.random() * (max - min + 1) + min;
+  return Math.floor(random);
 };

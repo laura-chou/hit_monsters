@@ -16,23 +16,49 @@ section {
   justify-content: space-around;
 }
 
-.countdown-wrapper {
+.player-info {
+  height: 20%;
+}
+
+.player-info,
+.monster-info {
   width: 100%;
-  height: 10%;
-  color: white;
+  color: #ffffff;
+  font-size: 20px;
   font-weight: bold;
+}
+
+.level, .hp, .attack {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  margin: 6px 10px 0 10px;
 }
 
-.level-label {
-  font-size: 1.5rem;
+.hp-container {
+  position: relative;
+  width: 200px;
+  height: 18px;
+  background: #555;
+  border-radius: 8px;
 }
 
-#timer {
-  font-size: 2.5rem;
-} 
+.hp-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: #e74c3c;
+  border-radius: 8px;
+  width: 100%;
+}
+
+.hp-value {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 18px;
+}
 
 .monster-info {
   height: 25%;
@@ -42,46 +68,48 @@ section {
   flex-direction: column;
 }
 
-.monster-info img {
+.monster-icon {
   width: 100px;
+  margin-bottom: 10px;
 }
 
-.hp-container {
-  width: 250px;
-  height: 12px;
-  border-radius: 5px;
-  border: 1px solid #ff0000;
-  overflow: hidden;
-  margin-top: 20px;
-}
-
-.hp-bar {
-  height: 100%;
-  background-color: #ff3333;
-  transition: width 0.3s ease;
+.monster-active {
+  filter: drop-shadow(0 0 10px rgba(0,200,255,0.8));
+  transform: scale(1.05);
+  transition: filter 0.3s ease, transform 0.3s ease;
 }
 
 .select-number {
+  width: 100px;
   height: 20px;
+  border: 1px solid #ffffff;
+  padding: 5px;
   color: #fff;
   font-size: 24px;
   font-weight: bold;
+  text-align: center;
+  margin-left: 50%;
 }
 
 .playground {
   width: 100%;
-  height: 65%;
+  height: 55%;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 table td {
-  width: 120px;
-  height: 120px;
+  width: 110px;
+  height: 110px;
   vertical-align: middle;
   text-align: -webkit-center;
   overflow: hidden;
+  cursor: pointer;
+}
+
+table td:active {
+  background-color:#ECF5FF;
 }
 
 .appear {

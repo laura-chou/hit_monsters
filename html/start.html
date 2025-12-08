@@ -3,24 +3,47 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/png" href="../images/icon.png">
+  <link rel="icon" type="image/png" href="../images/punching.png">
   <link rel="stylesheet" href="../css/common.style.css">
   <link rel="stylesheet" href="../css/start.styles.css">
   <title>怪獸終結者</title>
 </head>
 <body onselectstart="return false">
   <section>
-    <div class="countdown-wrapper">
-      <span class="level-label">關卡 1</span>
-      <span id="timer">10</span>
-    </div>
-    <div class="monster-info">
-      <img src="../images/monster1.png">
-      <div class="hp-container">
-        <div class="hp-bar" style="width: 100%;"></div>
+    <div class="player-info">
+      <div class="level">
+        <span>關卡 1</span>
+      </div>
+      <div class="hp">
+        <img class="icon" src="../images/heart.png">
+        <div class="hp-container">
+          <div class="hp-bar player"></div>
+          <div class="hp-value player"></div>
+        </div>
+      </div>
+      <div class="attack">
+        <img class="icon" src="../images/punching.png">
+        <span>20</span>
+        <div class="select-number"></div>
       </div>
     </div>
-    <div class="select-number"></div>
+    <div class="monster-info">
+      <img class="monster-icon" src="../images/monster1.png">
+      <div>
+        <div class="hp">
+          <img class="icon" src="../images/heart.png">
+          <div class="hp-container">
+            <div class="hp-bar monster"></div>
+            <div class="hp-value monster"></div>
+          </div>
+        </div>
+        <div class="attack">
+          <img class="icon" src="../images/claw.png">
+          <span>20</span>
+        </div>
+      </div>
+    </div>
+
     <div class="playground">
       <table border="5px outset black">
         <tr>
@@ -65,66 +88,107 @@
   import { randNumberWithMin } from "../js/common.js";
   import { playAudioEffect } from "../js/start.js";
   import { startCountdown } from "../js/timer.js";
-  startCountdown(30)
-  let isMonsterActive = true;
+  // startCountdown(30)
+  let lockPlayer = true;
   let selectIndex = [];
-  let appearIndex = [1,2,2];
+  let appearIndex = [];
   let monsterHp = 100;
+  let playerHp = 100;
+  const playerAttck = 20;
+  const monsterAttck = 20;
 
-  setInterval(() => {
-    console.log(isMonsterActive);
-    if (isMonsterActive) {
-      isMonsterActive = false;
-      appearIndex = getUniqueRandoms(3, $(".head").length - 1);
-      appearIndex.forEach((idx, i) => {
-        const appearTime = (i + 1) * 1000;
-        const duration = 1000;
-        
+  $(() => {
+    monsterAction();
+    showMonsterInfo();
+    showPlayerInfo();
+  })
+
+  const monsterAction = () => {
+    $(".monster-icon").addClass("monster-active");
+    appearIndex = getRandomsNoConsecutive(3, $(".head").length - 1);
+    console.log( $(".head").length);
+    console.log(appearIndex);
+    appearIndex.forEach((idx, i) => {
+      const appearTime = (i + 1) * 1000;
+      const duration = 1000;
+
+      setTimeout(() => {
+        $(".head").eq(idx)
+          .addClass("appear")
+          .css("background-image", 'url("../images/monster1.png")');
+
         setTimeout(() => {
-          console.log(idx);
-          $(".head").eq(idx)
-            .addClass("appear")
-            .css("background-image", 'url("../images/monster1.png")');
-
-          setTimeout(() => {
-            $(".head").eq(idx).removeClass("appear");
-          }, duration);
-        }, appearTime);
-      });
-    }
-  }, 1000)
-
-  const getUniqueRandoms = (count, max) => {
-    let arr = Array.from({length: max + 1}, (_, i) => i);
-    arr.sort(() => Math.random() - 0.5);
-    return arr.slice(0, count);
+          $(".head").eq(idx).removeClass("appear");
+          if(i === appearIndex.length - 1) {
+            $(".monster-icon").removeClass("monster-active");
+            lockPlayer = false;
+          }
+        }, duration);
+      }, appearTime);
+    });
   }
 
+  const getRandomsNoConsecutive = (count, max) => {
+    let result = [];
+    for (let i = 0; i < count; i++) {
+      let num;
+      do {
+        num = randNumberWithMin(0, max);
+      } while (i > 0 && num === result[i - 1]);
+      result.push(num);
+    }
+    return result;
+  };
+
   $("td").on("click", (event) => {
-    if (!isMonsterActive) {
-      if (selectIndex.length !== appearIndex.length) {
-        selectIndex.push(parseInt($(event.target).attr("value")));
-      }
-      const showToPlayer = selectIndex.map(x => x + 1);
-      $(".select-number").text(showToPlayer.join(","))
-      if (selectIndex.length === appearIndex.length) {
-        setTimeout(() => {
-          if (appearIndex.every((val, idx) => val === selectIndex[idx])) {
-            $(".monster-info img").addClass("hit");
-            monsterHp-=10;
-            $(".hp-bar").css("width", `${monsterHp}%`);
-          } else {
-            $(".monster-info img").addClass("monster-attack");
-          }
-        }, 1000)
-      }
+    if (lockPlayer) {
+      event.preventDefault();
+      return;
+    }
+    if (selectIndex.length !== appearIndex.length) {
+      selectIndex.push(parseInt($(event.target).attr("value")));
+    }
+    const showToPlayer = selectIndex.map(x => x + 1);
+    $(".select-number").text(showToPlayer.join(" "))
+    if (selectIndex.length === appearIndex.length) {
+      lockPlayer = true;
       setTimeout(() => {
-        $(".monster-info img").removeClass("hit monster-attack");
-        isMonsterActive = true;
-        $(".select-number").text("")
-        selectIndex.length = 0
-      }, 2000)
+        if (appearIndex.every((val, idx) => val === selectIndex[idx])) {
+          $(".monster-icon").addClass("hit");
+          monsterHp-=playerAttck;
+          showMonsterInfo();
+        } else {
+          $(".monster-icon").addClass("monster-attack");
+          setTimeout(() => {
+            playerHp-=monsterAttck
+            showPlayerInfo();
+          }, 500);
+        }
+        setTimeout(() => {
+          $(".monster-icon").removeClass("hit monster-attack");
+          $(".select-number").text("")
+          selectIndex.length = 0
+          monsterAction();
+        }, 1500)
+
+        gameOver();
+      }, 1000)
     }
   });
+  const gameOver = () => {
+    if (playerHp === 0 || monsterHp === 0) {
+
+    }
+  }
+
+  const showMonsterInfo = () => {
+    $(".hp-bar.monster").css("width", `${monsterHp}%`);
+    $(".hp-value.monster").text(monsterHp);
+  }
+
+  const showPlayerInfo = () => {
+    $(".hp-bar.player").css("width", `${playerHp}%`);
+    $(".hp-value.player").text(playerHp);
+  }
 </script>
 </html>
