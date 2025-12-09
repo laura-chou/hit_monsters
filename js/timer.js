@@ -1,5 +1,3 @@
-import { setLimitTime } from "../js/store.js"
-
 export const startCountdown = (seconds) => {
   let counter = seconds;
   const interval = setInterval(() => {
@@ -7,8 +5,7 @@ export const startCountdown = (seconds) => {
     if (counter < 0) {
       clearInterval(interval);
     } else {
-      setLimitTime(counter)
-      document.getElementById("timer").textContent = counter;
+      // setLimitTime(counter)
     }
   }, 1000);
 }

@@ -23,12 +23,12 @@
       </div>
       <div class="attack">
         <img class="icon" src="../images/punching.png">
-        <span>20</span>
+        <span class="player-attack"></span>
         <div class="select-number"></div>
       </div>
     </div>
     <div class="monster-info">
-      <img class="monster-icon" src="../images/monster1.png">
+      <img class="monster-icon">
       <div>
         <div class="hp">
           <img class="icon" src="../images/heart.png">
@@ -39,7 +39,7 @@
         </div>
         <div class="attack">
           <img class="icon" src="../images/claw.png">
-          <span>20</span>
+          <span class="monster-attack"></span>
         </div>
       </div>
     </div>
@@ -86,18 +86,19 @@
 <script src="../js/jquery-3.7.1.min.js"></script>
 <script type="module">
   import { randNumberWithMin } from "../js/common.js";
+  import { setPlayerInfo, getPlayerInfo, setMonsterInfo, getMonsterInfo } from "../js/store.js";
   import { playAudioEffect } from "../js/start.js";
   import { startCountdown } from "../js/timer.js";
   // startCountdown(30)
   let lockPlayer = true;
   let selectIndex = [];
   let appearIndex = [];
-  let monsterHp = 100;
-  let playerHp = 100;
-  const playerAttck = 20;
-  const monsterAttck = 20;
+  let playerInfo = {};
+  let monsterInfo = {};
 
   $(() => {
+    setPlayerInfo(null);
+    setMonsterInfo(null);
     monsterAction();
     showMonsterInfo();
     showPlayerInfo();
@@ -106,8 +107,6 @@
   const monsterAction = () => {
     $(".monster-icon").addClass("monster-active");
     appearIndex = getRandomsNoConsecutive(3, $(".head").length - 1);
-    console.log( $(".head").length);
-    console.log(appearIndex);
     appearIndex.forEach((idx, i) => {
       const appearTime = (i + 1) * 1000;
       const duration = 1000;
@@ -115,7 +114,7 @@
       setTimeout(() => {
         $(".head").eq(idx)
           .addClass("appear")
-          .css("background-image", 'url("../images/monster1.png")');
+          .css("background-image", `url("../images/monster${monsterInfo.id}.png")`);
 
         setTimeout(() => {
           $(".head").eq(idx).removeClass("appear");
@@ -155,12 +154,14 @@
       setTimeout(() => {
         if (appearIndex.every((val, idx) => val === selectIndex[idx])) {
           $(".monster-icon").addClass("hit");
-          monsterHp-=playerAttck;
+          monsterInfo.life-=playerInfo.attack;
+          setMonsterInfo(monsterInfo);
           showMonsterInfo();
         } else {
           $(".monster-icon").addClass("monster-attack");
           setTimeout(() => {
-            playerHp-=monsterAttck
+            playerInfo.life-=monsterInfo.attack;
+            setPlayerInfo(playerInfo);
             showPlayerInfo();
           }, 500);
         }
@@ -168,27 +169,32 @@
           $(".monster-icon").removeClass("hit monster-attack");
           $(".select-number").text("")
           selectIndex.length = 0
-          monsterAction();
+          checkGameOver();
         }, 1500)
-
-        gameOver();
       }, 1000)
     }
   });
-  const gameOver = () => {
-    if (playerHp === 0 || monsterHp === 0) {
+  const checkGameOver = () => {    
+    if (playerInfo.life === 0 || monsterInfo.life === 0) {
 
+    } else {
+      monsterAction();
     }
   }
 
   const showMonsterInfo = () => {
-    $(".hp-bar.monster").css("width", `${monsterHp}%`);
-    $(".hp-value.monster").text(monsterHp);
+    monsterInfo = getMonsterInfo();
+    $(".hp-bar.monster").css("width", `${monsterInfo.life}%`);
+    $(".hp-value.monster").text(monsterInfo.life);
+    $(".monster-attack").text(monsterInfo.attack);
+    $(".monster-icon").attr("src", `../images/monster${monsterInfo.id}.png`);
   }
 
   const showPlayerInfo = () => {
-    $(".hp-bar.player").css("width", `${playerHp}%`);
-    $(".hp-value.player").text(playerHp);
+    playerInfo = getPlayerInfo();
+    $(".hp-bar.player").css("width", `${playerInfo.life}%`);
+    $(".hp-value.player").text(playerInfo.life);
+    $(".player-attack").text(playerInfo.attack);
   }
 </script>
 </html>
