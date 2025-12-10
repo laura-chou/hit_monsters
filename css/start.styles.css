@@ -7,7 +7,7 @@ body {
   justify-content: center;
 }
 
-section {
+#start {
   width: 390px;
   height: 100%;
   display: flex;
@@ -16,12 +16,21 @@ section {
   justify-content: space-around;
 }
 
+#settle {
+  width: 390px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .player-info {
   height: 20%;
 }
 
 .player-info,
-.monster-info {
+.monster-info,
+#settle {
   width: 100%;
   color: #ffffff;
   font-size: 20px;
@@ -57,7 +66,7 @@ section {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 18px;
+  font-size: 16px;
 }
 
 .monster-info {
@@ -80,8 +89,8 @@ section {
 }
 
 .select-number {
-  width: 100px;
-  height: 20px;
+  width: 120px;
+  height: 40px;
   border: 1px solid #ffffff;
   padding: 5px;
   color: #fff;
@@ -99,13 +108,18 @@ section {
   justify-content: center;
 }
 
+table {
+  border: 5px outset #F0F0F0;
+}
+
 table td {
-  width: 110px;
-  height: 110px;
+  width: 110px !important;
+  height: 110px !important;
   vertical-align: middle;
   text-align: -webkit-center;
   overflow: hidden;
   cursor: pointer;
+  border: 1px solid #fff;
 }
 
 table td:active {
@@ -129,6 +143,21 @@ table td:active {
 
 .monster-attack {
   animation: monsterAttackForward 0.5s ease-out;
+}
+
+.entity {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 1rem;
+  border-radius: 10px;
+}
+
+.vs {
+  width: 80px;
+  height: 120px;
+}
+
+.reward {
+  width: 60px;
 }
 
 @keyframes monsterAttackForward {
@@ -158,4 +187,29 @@ table td:active {
   section {
     width: 100%;
   }
+}
+
+.reward-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.reward-toggle input[type="radio"] {
+  display: none;
+}
+
+.reward-toggle label {
+  background: #2c1f3a;
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.reward-toggle input[type="radio"]:checked + label {
+  background: #ffd700;
+  color: #000;
+  font-weight: bold;
 }

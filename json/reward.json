@@ -1,0 +1,17 @@
+[
+  {
+    "rank": 1,
+    "life": 0,
+    "attack": 0
+  },
+  {
+    "rank": 2,
+    "life": 30,
+    "attack": 10
+  },
+  {
+    "rank": 3,
+    "life": 40,
+    "attack": 10
+  }
+]

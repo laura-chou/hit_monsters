@@ -4,12 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/png" href="../images/punching.png">
+  <link rel="stylesheet" href="../css/bootstrap.min.css">
   <link rel="stylesheet" href="../css/common.style.css">
   <link rel="stylesheet" href="../css/start.styles.css">
   <title>怪獸終結者</title>
 </head>
 <body onselectstart="return false">
-  <section>
+  <section id="start"  class="d-none">
     <div class="player-info">
       <div class="level">
         <span>關卡 1</span>
@@ -43,9 +44,8 @@
         </div>
       </div>
     </div>
-
     <div class="playground">
-      <table border="5px outset black">
+      <table>
         <tr>
             <td value=0>
               <div class="head"></div>
@@ -82,14 +82,61 @@
       </table>
     </div>
   </section>
+  <div id="settle">
+    <span class="fs-4 m-5">下一關</span>
+    <div class="d-flex align-items-center entity">
+      <div class="text-center">
+        <div>
+          <div class="hp">
+            <img class="icon" src="../images/heart.png">
+            <span class="next player-hp">100</span>
+          </div>
+          <div class="attack">
+            <img class="icon" src="../images/punching.png">
+            <span class="next player-attack"></span>
+          </div>
+        </div>
+      </div>
+      <div class="ms-4 me-4">
+        <img class="vs" src="../images/thunder.png">
+      </div>
+      <div class="text-center">
+        <img class="monster-icon" src="../images/monster2.png">
+        <div>
+          <div class="hp">
+            <img class="icon" src="../images/heart.png">
+            <span class="next monster-hp">100</span>
+          </div>
+          <div class="attack">
+            <img class="icon" src="../images/claw.png">
+            <span class="next monster-attack"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="reward-toggle m-5">
+      <input type="radio" name="reward" checked>
+      <label>
+        <img class="icon" src="../images/heart.png">
+        <span class="reward-life"></span>
+      </label>
+      <input type="radio" name="reward">
+      <label>
+        <img class="icon" src="../images/punching.png">
+        <span class="reward-attack"></span>
+      </label>
+    </div>
+    <button type="button" class="btn btn-danger" onclick="nextLevel()">GO</button>
+  </section>
 </body>
 <script src="../js/jquery-3.7.1.min.js"></script>
+<script src="../js/bootstrap.bundle.min.js"></script>
 <script type="module">
-  import { randNumberWithMin } from "../js/common.js";
+  import { getRandomsNoConsecutive, getRewardData } from "../js/common.js";
   import { setPlayerInfo, getPlayerInfo, setMonsterInfo, getMonsterInfo } from "../js/store.js";
   import { playAudioEffect } from "../js/start.js";
   import { startCountdown } from "../js/timer.js";
-  // startCountdown(30)
+
   let lockPlayer = true;
   let selectIndex = [];
   let appearIndex = [];
@@ -97,7 +144,7 @@
   let monsterInfo = {};
 
   $(() => {
-    setPlayerInfo(null);
+    setPlayerInfo(getPlayerInfo());
     setMonsterInfo(null);
     monsterAction();
     showMonsterInfo();
@@ -126,18 +173,6 @@
       }, appearTime);
     });
   }
-
-  const getRandomsNoConsecutive = (count, max) => {
-    let result = [];
-    for (let i = 0; i < count; i++) {
-      let num;
-      do {
-        num = randNumberWithMin(0, max);
-      } while (i > 0 && num === result[i - 1]);
-      result.push(num);
-    }
-    return result;
-  };
 
   $("td").on("click", (event) => {
     if (lockPlayer) {
@@ -174,12 +209,24 @@
       }, 1000)
     }
   });
-  const checkGameOver = () => {    
+  const checkGameOver = () => {
     if (playerInfo.life === 0 || monsterInfo.life === 0) {
-
+        if (isPlayerWin()) {
+          playerInfo.rank++;
+          setPlayerInfo(playerInfo);
+          $("#start").addClass("d-none");
+          $("#settle").removeClass("d-none");
+          const reward = getRewardData(playerInfo.rank);
+          $(".reward-life").text(reward.life);
+          $(".reward-attack").text(reward.attack);
+        }
     } else {
       monsterAction();
     }
+  }
+
+  const isPlayerWin = () => {
+    return monsterInfo.life === 0;
   }
 
   const showMonsterInfo = () => {
@@ -195,6 +242,11 @@
     $(".hp-bar.player").css("width", `${playerInfo.life}%`);
     $(".hp-value.player").text(playerInfo.life);
     $(".player-attack").text(playerInfo.attack);
+  }
+
+  const nextLevel = () => {
+    $("#start").removeClass("d-none");
+    $("#settle").addClass("d-none")
   }
 </script>
 </html>
