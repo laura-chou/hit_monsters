@@ -10,7 +10,7 @@
   <title>怪獸終結者</title>
 </head>
 <body onselectstart="return false">
-  <section id="start"  class="d-none">
+  <section id="start">
     <div class="player-info">
       <div class="level">
         <span>關卡 1</span>
@@ -82,14 +82,14 @@
       </table>
     </div>
   </section>
-  <div id="settle">
+  <div id="settle" class="d-none">
     <span class="fs-4 m-5">下一關</span>
     <div class="d-flex align-items-center entity">
       <div class="text-center">
         <div>
           <div class="hp">
             <img class="icon" src="../images/heart.png">
-            <span class="next player-hp">100</span>
+            <span class="next player-life"></span>
           </div>
           <div class="attack">
             <img class="icon" src="../images/punching.png">
@@ -101,11 +101,11 @@
         <img class="vs" src="../images/thunder.png">
       </div>
       <div class="text-center">
-        <img class="monster-icon" src="../images/monster2.png">
+        <img class="next monster-icon">
         <div>
           <div class="hp">
             <img class="icon" src="../images/heart.png">
-            <span class="next monster-hp">100</span>
+            <span class="next monster-life"></span>
           </div>
           <div class="attack">
             <img class="icon" src="../images/claw.png">
@@ -115,15 +115,16 @@
       </div>
     </div>
     <div class="reward-toggle m-5">
-      <input type="radio" name="reward" checked>
-      <label>
-        <img class="icon" src="../images/heart.png">
-        <span class="reward-life"></span>
+      <input type="radio" id="reward-life" name="reward" checked>
+      <label class="reward" for="reward-life">
+        <img src="../images/heart.png">
+        <span></span>
       </label>
-      <input type="radio" name="reward">
-      <label>
-        <img class="icon" src="../images/punching.png">
-        <span class="reward-attack"></span>
+
+      <input type="radio" id="reward-attack" name="reward">
+      <label class="reward" for="reward-attack">
+        <img src="../images/punching.png">
+        <span></span>
       </label>
     </div>
     <button type="button" class="btn btn-danger" onclick="nextLevel()">GO</button>
@@ -133,7 +134,7 @@
 <script src="../js/bootstrap.bundle.min.js"></script>
 <script type="module">
   import { getRandomsNoConsecutive, getRewardData } from "../js/common.js";
-  import { setPlayerInfo, getPlayerInfo, setMonsterInfo, getMonsterInfo } from "../js/store.js";
+  import { setPlayerInfo, getPlayerInfo, setLevelMonsters, setMonsterInfo, getMonsterInfo } from "../js/store.js";
   import { playAudioEffect } from "../js/start.js";
   import { startCountdown } from "../js/timer.js";
 
@@ -144,11 +145,12 @@
   let monsterInfo = {};
 
   $(() => {
+    setLevelMonsters();
     setPlayerInfo(getPlayerInfo());
     setMonsterInfo(null);
-    monsterAction();
     showMonsterInfo();
     showPlayerInfo();
+    monsterAction();
   })
 
   const monsterAction = () => {
@@ -209,17 +211,19 @@
       }, 1000)
     }
   });
+
   const checkGameOver = () => {
     if (playerInfo.life === 0 || monsterInfo.life === 0) {
-        if (isPlayerWin()) {
-          playerInfo.rank++;
-          setPlayerInfo(playerInfo);
-          $("#start").addClass("d-none");
-          $("#settle").removeClass("d-none");
-          const reward = getRewardData(playerInfo.rank);
-          $(".reward-life").text(reward.life);
-          $(".reward-attack").text(reward.attack);
-        }
+      if (isPlayerWin()) {
+        playerInfo.rank++;
+        setPlayerInfo(playerInfo);
+        setMonsterInfo(null);
+        $("#start").addClass("d-none");
+        $("#settle").removeClass("d-none");
+
+        showPlayerInfo(true);
+        showMonsterInfo(true);
+      }
     } else {
       monsterAction();
     }
@@ -229,19 +233,53 @@
     return monsterInfo.life === 0;
   }
 
-  const showMonsterInfo = () => {
+  const showMonsterInfo = (isNextLevel = false) => {
     monsterInfo = getMonsterInfo();
-    $(".hp-bar.monster").css("width", `${monsterInfo.life}%`);
-    $(".hp-value.monster").text(monsterInfo.life);
-    $(".monster-attack").text(monsterInfo.attack);
-    $(".monster-icon").attr("src", `../images/monster${monsterInfo.id}.png`);
+    if (isNextLevel) {
+      $(".next.monster-icon").attr("src", `../images/monster${monsterInfo.id}.png`);
+      $(".next.monster-life").text(monsterInfo.life);
+      $(".next.monster-attack").text(monsterInfo.attack);
+    } else {
+      $(".hp-bar.monster").css("width", `${monsterInfo.life}%`);
+      $(".hp-value.monster").text(monsterInfo.life);
+      $(".monster-attack").text(monsterInfo.attack);
+      $(".monster-icon").attr("src", `../images/monster${monsterInfo.id}.png`);
+    }
   }
 
-  const showPlayerInfo = () => {
+  const showPlayerInfo = (isNextLevel = false) => {
     playerInfo = getPlayerInfo();
-    $(".hp-bar.player").css("width", `${playerInfo.life}%`);
-    $(".hp-value.player").text(playerInfo.life);
-    $(".player-attack").text(playerInfo.attack);
+    if (isNextLevel) {
+      rewardPicked("life");
+    } else {
+      $(".hp-bar.player").css("width", `${playerInfo.life}%`);
+      $(".hp-value.player").text(playerInfo.life);
+      $(".player-attack").text(playerInfo.attack);
+    }
+  }
+
+  $("#reward-life").on("click", () => {
+    rewardPicked("life");
+  });
+
+  $("#reward-attack").on("click", () => {
+    rewardPicked("attack");
+  });
+
+  const rewardPicked = (type) => {
+    const reward = getRewardData(playerInfo.rank);
+    $('#reward-life').next('label').find('span').text(`+${reward.life}`);
+    $('#reward-attack').next('label').find('span').text(`+${reward.attack}`);
+    switch (type) {
+      case "life":
+        $(".next.player-life").text(playerInfo.originLife + reward.life);
+        $(".next.player-attack").text(playerInfo.originAttack);
+        break;
+      case "attack":
+        $(".next.player-life").text(playerInfo.originLife);
+        $(".next.player-attack").text(playerInfo.originAttack + reward.attack);
+        break;
+    }
   }
 
   const nextLevel = () => {

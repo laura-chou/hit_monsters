@@ -13,6 +13,14 @@ export const randNumberWithMin = (min, max) => {
   return Math.floor(random);
 };
 
+export const getRandomMonsters = () => {
+  const nums = new Set();
+  while (nums.size < 3) {
+    nums.add(randNumberWithMin(1, 6));
+  }
+  return [...nums];
+}
+
 export const getRandomsNoConsecutive = (count, max) => {
   let result = [];
   for (let i = 0; i < count; i++) {
