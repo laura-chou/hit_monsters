@@ -16,7 +16,8 @@ export const setPlayerInfo = (data) => {
       life: 100,
       attack: 20,
       originLife: 100,
-      originAttack: 20
+      originAttack: 20,
+      settle: false
     };
   }
   if (playerInfo.life < 0) playerInfo.life = 0;
@@ -53,3 +54,9 @@ const getMonsterId = (rank) => {
   const level = getStoreItem("level").split(",");
   return level[rank - 1];
 }
+
+export const removeStorage = () => {
+  sessionStorage.removeItem("player-info");
+  sessionStorage.removeItem("monster-info");
+  sessionStorage.removeItem("level");
+};

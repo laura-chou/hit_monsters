@@ -179,16 +179,6 @@ table td:active {
   100% { transform: translateY(110%); }
 }
 
-@media (orientation: portrait) {
-  body {
-    background-image: url("../images/mobile-start-bg.png");
-  }
-
-  section {
-    width: 100%;
-  }
-}
-
 .reward-toggle {
   display: flex;
   justify-content: center;
@@ -223,4 +213,18 @@ table td:active {
 .reward img {
   width: 30px;
   margin-right: 2px;
+}
+
+.swal2-image {
+  margin-bottom: 0;
+}
+
+@media (orientation: portrait) {
+  body {
+    background-image: url("../images/mobile-start-bg.png");
+  }
+
+  section {
+    width: 100%;
+  }
 }

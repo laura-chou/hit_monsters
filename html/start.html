@@ -83,7 +83,7 @@
     </div>
   </section>
   <div id="settle" class="d-none">
-    <span class="fs-4 m-5">下一關</span>
+    <span class="fs-3 m-5">下一關</span>
     <div class="d-flex align-items-center entity">
       <div class="text-center">
         <div>
@@ -127,13 +127,14 @@
         <span></span>
       </label>
     </div>
-    <button type="button" class="btn btn-danger" onclick="nextLevel()">GO</button>
+    <button id="next-level" type="button" class="btn btn-danger fw-bold">GO</button>
   </section>
 </body>
 <script src="../js/jquery-3.7.1.min.js"></script>
+<script src="../js/sweetalert2@11.js"></script>
 <script src="../js/bootstrap.bundle.min.js"></script>
 <script type="module">
-  import { getRandomsNoConsecutive, getRewardData } from "../js/common.js";
+  import { getRandomsNoConsecutive, getRewardData, redirectToHome } from "../js/common.js";
   import { setPlayerInfo, getPlayerInfo, setLevelMonsters, setMonsterInfo, getMonsterInfo } from "../js/store.js";
   import { playAudioEffect } from "../js/start.js";
   import { startCountdown } from "../js/timer.js";
@@ -145,12 +146,20 @@
   let monsterInfo = {};
 
   $(() => {
-    setLevelMonsters();
-    setPlayerInfo(getPlayerInfo());
-    setMonsterInfo(null);
-    showMonsterInfo();
+    if (getMonsterInfo() === null) {
+      setLevelMonsters();
+      setPlayerInfo(getPlayerInfo());
+      setMonsterInfo(null);
+    }
     showPlayerInfo();
+    showMonsterInfo();
     monsterAction();
+    if (playerInfo.settle) {
+      $("#start").addClass("d-none");
+      $("#settle").removeClass("d-none");
+      showPlayerInfo(true);
+      showMonsterInfo(true);
+    }
   })
 
   const monsterAction = () => {
@@ -215,14 +224,50 @@
   const checkGameOver = () => {
     if (playerInfo.life === 0 || monsterInfo.life === 0) {
       if (isPlayerWin()) {
-        playerInfo.rank++;
-        setPlayerInfo(playerInfo);
-        setMonsterInfo(null);
-        $("#start").addClass("d-none");
-        $("#settle").removeClass("d-none");
+        if (playerInfo.rank === 3) {
+          Swal.fire({
+            imageUrl: "../images/book.png",
+            imageWidth: 80,
+            imageHeight: 80,
+            title: "勇者之名，銘刻史冊",
+            html: "<span class='fs-5 fw-bold'>通關時間 20:00</span>",
+            inputPlaceholder: "請輸入名字",
+            input: "text",
+            inputAttributes: {
+              autocapitalize: "off"
+            },
+            allowOutsideClick: false,
+            confirmButtonText: "確定",
+            preConfirm: (player) => {
+              if (player.trim() === "") {
+                return Swal.showValidationMessage("請輸入名字");
+              }
+            }
+          }).then((result) => {
+            redirectToHome();
+          });
+        } else {
+          playerInfo.rank++;
+          playerInfo.settle = true;
+          setPlayerInfo(playerInfo);
+          setMonsterInfo(null);
+          $("#start").addClass("d-none");
+          $("#settle").removeClass("d-none");
 
-        showPlayerInfo(true);
-        showMonsterInfo(true);
+          showPlayerInfo(true);
+          showMonsterInfo(true);
+        }
+      } else {
+        Swal.fire({
+          imageUrl: "../images/grave.png",
+          imageWidth: 80,
+          imageHeight: 80,
+          allowOutsideClick: false,
+          title: "勇者殞落，黑暗再度蔓延",
+          confirmButtonText: "確定"
+        }).then((result) => {
+          redirectToHome();
+        });
       }
     } else {
       monsterAction();
@@ -282,9 +327,20 @@
     }
   }
 
-  const nextLevel = () => {
+  $("#next-level").on("click", () => {
+    const life = parseInt($(".next.player-life").text());
+    const attack = parseInt($(".next.player-attack").text());
+    playerInfo.life = life;
+    playerInfo.originLife = life;
+    playerInfo.attack = attack;
+    playerInfo.originAttack = attack;
+    playerInfo.settle = false;
+    setPlayerInfo(playerInfo);
     $("#start").removeClass("d-none");
     $("#settle").addClass("d-none")
-  }
+    showPlayerInfo();
+    showMonsterInfo();
+    monsterAction();
+  });
 </script>
 </html>

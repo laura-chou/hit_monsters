@@ -1,3 +1,5 @@
+import { removeStorage } from "../js/store.js";
+
 const getPathName = () => {
   let path = "/";
   if (window.location.pathname.includes("hit_monsters")) {
@@ -55,4 +57,9 @@ export const getMonsterData = (rank) => {
 
 export const getRewardData = (rank) => {
   return rewardInfo.find(info => info.rank === parseInt(rank));
+};
+
+export const redirectToHome = () => {
+  removeStorage();
+  window.location.href = pathName;
 };
