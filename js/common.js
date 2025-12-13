@@ -35,6 +35,12 @@ export const getRandomsNoConsecutive = (count, max) => {
   return result;
 };
 
+export const playAudioEffect = (src) => {
+  const audio = new Audio();
+  audio.src = `${pathName}music/${src}.mp3`;
+  audio.play();
+};
+
 const readJsonFile = async (url) => {
   try {
     const response = await fetch(url);

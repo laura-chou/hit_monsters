@@ -8,6 +8,14 @@ const getStoreItem = (key) => {
   return sessionStorage.getItem(key);
 };
 
+export const getTime = () => {
+  return getStoreItem("time");
+};
+
+export const setTime = (value) => {
+  setStoreItem("time", value);
+};
+
 export const setPlayerInfo = (data) => {
   let playerInfo = data;
   if (!playerInfo) {
@@ -59,4 +67,5 @@ export const removeStorage = () => {
   sessionStorage.removeItem("player-info");
   sessionStorage.removeItem("monster-info");
   sessionStorage.removeItem("level");
+  sessionStorage.removeItem("time");
 };

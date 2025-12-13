@@ -134,10 +134,9 @@
 <script src="../js/sweetalert2@11.js"></script>
 <script src="../js/bootstrap.bundle.min.js"></script>
 <script type="module">
-  import { getRandomsNoConsecutive, getRewardData, redirectToHome } from "../js/common.js";
-  import { setPlayerInfo, getPlayerInfo, setLevelMonsters, setMonsterInfo, getMonsterInfo } from "../js/store.js";
-  import { playAudioEffect } from "../js/start.js";
-  import { startCountdown } from "../js/timer.js";
+  import { getRandomsNoConsecutive, getRewardData, redirectToHome, playAudioEffect } from "../js/common.js";
+  import { getTime, setPlayerInfo, getPlayerInfo, setLevelMonsters, setMonsterInfo, getMonsterInfo } from "../js/store.js";
+  import { timeTo } from "../js/timer.js";
 
   let lockPlayer = true;
   let selectIndex = [];
@@ -150,6 +149,7 @@
       setLevelMonsters();
       setPlayerInfo(getPlayerInfo());
       setMonsterInfo(null);
+      timeTo();
     }
     showPlayerInfo();
     showMonsterInfo();
@@ -170,6 +170,7 @@
       const duration = 1000;
 
       setTimeout(() => {
+        playAudioEffect("swoosh");
         $(".head").eq(idx)
           .addClass("appear")
           .css("background-image", `url("../images/monster${monsterInfo.id}.png")`);
@@ -190,6 +191,7 @@
       event.preventDefault();
       return;
     }
+    playAudioEffect("press");
     if (selectIndex.length !== appearIndex.length) {
       selectIndex.push(parseInt($(event.target).attr("value")));
     }
@@ -199,11 +201,13 @@
       lockPlayer = true;
       setTimeout(() => {
         if (appearIndex.every((val, idx) => val === selectIndex[idx])) {
+          playAudioEffect("hit");
           $(".monster-icon").addClass("hit");
           monsterInfo.life-=playerInfo.attack;
           setMonsterInfo(monsterInfo);
           showMonsterInfo();
         } else {
+          playAudioEffect("monster");
           $(".monster-icon").addClass("monster-attack");
           setTimeout(() => {
             playerInfo.life-=monsterInfo.attack;
@@ -223,14 +227,16 @@
 
   const checkGameOver = () => {
     if (playerInfo.life === 0 || monsterInfo.life === 0) {
+      timeTo("stop");
       if (isPlayerWin()) {
         if (playerInfo.rank === 3) {
+          playAudioEffect("complete");
           Swal.fire({
             imageUrl: "../images/book.png",
             imageWidth: 80,
             imageHeight: 80,
             title: "勇者之名，銘刻史冊",
-            html: "<span class='fs-5 fw-bold'>通關時間 20:00</span>",
+            html: `<span class='fs-5 fw-bold'>通關時間 ${getTime()}</span>`,
             inputPlaceholder: "請輸入名字",
             input: "text",
             inputAttributes: {
@@ -247,6 +253,7 @@
             redirectToHome();
           });
         } else {
+          playAudioEffect("level");
           playerInfo.rank++;
           playerInfo.settle = true;
           setPlayerInfo(playerInfo);
@@ -258,6 +265,7 @@
           showMonsterInfo(true);
         }
       } else {
+        playAudioEffect("lose");
         Swal.fire({
           imageUrl: "../images/grave.png",
           imageWidth: 80,
@@ -341,6 +349,7 @@
     showPlayerInfo();
     showMonsterInfo();
     monsterAction();
+    timeTo("start");
   });
 </script>
 </html>
