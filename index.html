@@ -4,7 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/png" href="./images/punching.png">
+  <link rel="stylesheet" href="./css/bootstrap.min.css">
+  <link rel="stylesheet" href="./css/fontawesome.min.css">
+  <link rel="stylesheet" href="./css/solid.min.css">
   <link rel="stylesheet" href="./css/common.style.css">
+  <link rel="stylesheet" href="./css/dataTable.style.css">
   <link rel="stylesheet" href="./css/index.style.css">
   <title>怪獸終結者</title>
 </head>
@@ -16,14 +20,75 @@
       <img src="./images/title2.png">
     </div>
     <div class="action">
-      <button id="start">開始</button>
+      <button class="btn-custom" id="start">開始</button>
+      <button class="btn-custom" id="ranking">勇者名錄</button>
     </div>
   </section>
 </body>
 <script src="./js/jquery-3.7.1.min.js"></script>
+<script src="./js/bootstrap.bundle.min.js"></script>
+<script src="./js/sweetalert2@11.js"></script>
+<script src="./js/fontawesome.min.js"></script>
 <script type="module">
+  import { connectServer, isPlayerExist, getTopFivePlayers, checkConnect } from "./js/store.js";
+  import { getTopRankHtml } from "./js/rank.js";
+  import { convertToBool, accordionEffect, serverError } from "./js/common.js";
+
+    $(async () => {
+    if (isPlayerExist()) {
+      $("#start").text("繼續");
+    }
+
+    if (checkConnect()) {
+      Swal.fire({
+        html: `<div><img src="./images/loading.svg"><h2>請稍後</h2></div>`,
+        allowOutsideClick: false,
+        showConfirmButton:false
+      });
+      const isConnect = await connectServer();
+      if (isConnect) {
+        Swal.close();
+      } else {
+        Swal.fire({
+          icon: "warning",
+          title: "伺服器維護中",
+          html: "<h4>請稍後再試</h4>",
+          allowOutsideClick: false,
+          showConfirmButton:false
+        });
+      }
+    }
+  })
+
   $("#start").click(() => {
     location.href = "html/start.html";
+  });
+
+  $("#ranking").click(async () => {
+    Swal.fire({
+      imageUrl: "./images/book.png",
+      imageWidth: 80,
+      imageHeight: 80,
+      allowOutsideClick: false,
+      showCloseButton: true,
+      html: `<div id="data"><img src="./images/loading.svg"></div>`,
+      confirmButtonText: "更多"
+    }).then((result) => {
+      if (result.value) {
+        window.open("html/rank.html", "_blank");
+      }
+    });
+    const response = await getTopFivePlayers();
+    if (response) {
+      $("#data").html(getTopRankHtml(response));
+      if (response.length != 0) {
+        $("#data").on("click", ".accordion", event => {
+          accordionEffect(event.currentTarget);
+        });
+      }
+    } else {
+      serverError(false);
+    }
   });
 </script>
 </html>

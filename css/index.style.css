@@ -14,7 +14,7 @@ section {
   text-align: center;
 }
 
-#start {
+.btn-custom {
   background: linear-gradient(to bottom, #ffa07a, #ff6347);
   border: none;
   padding: 15px 30px;
@@ -26,8 +26,17 @@ section {
   transition: transform 0.2s ease;
 }
 
-button:hover {
+.btn-custom:hover {
   transform: scale(1.05);
+}
+
+.action {
+  display: flex;
+  flex-direction: column;
+}
+
+#start {
+  margin: 40px 0;
 }
 
 @media (orientation: portrait) {

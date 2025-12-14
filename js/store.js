@@ -1,4 +1,7 @@
-import { getMonsterData, getRandomMonsters } from "../js/common.js";
+import { getMonsterData, getRandomMonsters, convertToBool } from "../js/common.js";
+
+const domain = "http://localhost:3000";
+const hitMonstersUrl = `${domain}/hit-monsters`;
 
 const setStoreItem = (key, value) => {
   sessionStorage.setItem(key, value);
@@ -6,6 +9,28 @@ const setStoreItem = (key, value) => {
 
 const getStoreItem = (key) => {
   return sessionStorage.getItem(key);
+};
+
+const getMonsterId = (rank) => {
+  const level = getStoreItem("level").split(",");
+  return level[rank - 1];
+}
+
+export const connectServer = () => {
+  setStoreItem("connect", false);
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      url: domain,
+      method: "GET",
+      success: function () {
+        setStoreItem("connect", true)
+        resolve(true)
+      },
+      error: function () {
+        resolve(false)
+      }
+    });
+  });
 };
 
 export const getTime = () => {
@@ -36,6 +61,10 @@ export const getPlayerInfo = () => {
   return JSON.parse(getStoreItem("player-info"));
 };
 
+export const isPlayerExist = () => {
+  return getPlayerInfo() != undefined;
+};
+
 export const setMonsterInfo = (data) => {
   let monsterInfo = data;
   if (!monsterInfo) {
@@ -58,14 +87,29 @@ export const setLevelMonsters = () => {
   setStoreItem("level", getRandomMonsters().toString());
 };
 
-const getMonsterId = (rank) => {
-  const level = getStoreItem("level").split(",");
-  return level[rank - 1];
-}
-
 export const removeStorage = () => {
   sessionStorage.removeItem("player-info");
   sessionStorage.removeItem("monster-info");
   sessionStorage.removeItem("level");
   sessionStorage.removeItem("time");
+};
+
+export const checkConnect = () => {
+  return !convertToBool(getStoreItem("connect"));
+}
+
+export const getTopFivePlayers = () => {
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      url: `${hitMonstersUrl}/top5`,
+      method: "GET",
+      dataType: "json",
+      success: function (response) {
+        resolve(response.data)
+      },
+      error: function (xhr, ajaxOptions, thrownError) {
+        resolve(null)
+      }
+    });
+  });
 };

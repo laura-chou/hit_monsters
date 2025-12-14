@@ -1,3 +1,8 @@
+:root {
+  --black: #000;
+  --white: #FCFCFC;
+}
+
 body, html {
   margin: 0;
   padding: 0;
