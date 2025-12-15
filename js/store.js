@@ -46,14 +46,14 @@ export const setPlayerInfo = (data) => {
   if (!playerInfo) {
     playerInfo = {
       rank: 1,
-      life: 100,
-      attack: 20,
+      currentLife: 100,
+      currentAttack: 20,
       originLife: 100,
       originAttack: 20,
-      settle: false
+      settle: true
     };
   }
-  if (playerInfo.life < 0) playerInfo.life = 0;
+  if (playerInfo.currentLife < 0) playerInfo.currentLife = 0;
   setStoreItem("player-info", JSON.stringify(playerInfo));
 };
 
@@ -71,11 +71,14 @@ export const setMonsterInfo = (data) => {
     const data = getMonsterData(getPlayerInfo().rank);
     monsterInfo = {
       id: getMonsterId(data.rank),
-      life: data.life,
-      attack: data.attack
+      currentLife: data.life,
+      currentAttack: data.attack,
+      originLife: data.life,
+      originAttack: data.attack,
+      times: data.times
     };
   }
-  if (monsterInfo.life < 0) monsterInfo.life = 0;
+  if (monsterInfo.currentLife < 0) monsterInfo.currentLife = 0;
   setStoreItem("monster-info", JSON.stringify(monsterInfo));
 };
 
@@ -104,6 +107,44 @@ export const getTopFivePlayers = () => {
       url: `${hitMonstersUrl}/top5`,
       method: "GET",
       dataType: "json",
+      success: function (response) {
+        resolve(response.data)
+      },
+      error: function (xhr, ajaxOptions, thrownError) {
+        resolve(null)
+      }
+    });
+  });
+};
+
+export const getAllPlayers = () => {
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      url: hitMonstersUrl,
+      method: "GET",
+      dataType: "json",
+      success: function (response) {
+        resolve(response.data)
+      },
+      error: function (xhr, ajaxOptions, thrownError) {
+        resolve(null)
+      }
+    });
+  });
+};
+
+export const insertPlayer = (playerName) => {
+  return new Promise((resolve, reject) => {
+    const data = {
+      player: playerName,
+      spentTime: getTime()
+    };
+    $.ajax({
+      url: `${hitMonstersUrl}/create`,
+      method: "POST",
+      dataType: "json",
+      contentType: "application/json",
+      data: JSON.stringify(data),
       success: function (response) {
         resolve(response.data)
       },

@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>怪獸終結者</title>
   <link rel="icon" type="image/png" href="./images/punching.png">
   <link rel="stylesheet" href="./css/bootstrap.min.css">
   <link rel="stylesheet" href="./css/fontawesome.min.css">
@@ -10,7 +11,6 @@
   <link rel="stylesheet" href="./css/common.style.css">
   <link rel="stylesheet" href="./css/dataTable.style.css">
   <link rel="stylesheet" href="./css/index.style.css">
-  <title>怪獸終結者</title>
 </head>
 <body onselectstart="return false">
   <section>
@@ -31,7 +31,7 @@
 <script src="./js/fontawesome.min.js"></script>
 <script type="module">
   import { connectServer, isPlayerExist, getTopFivePlayers, checkConnect } from "./js/store.js";
-  import { getTopRankHtml } from "./js/rank.js";
+  import { getRankHtml } from "./js/rank.js";
   import { convertToBool, accordionEffect, serverError } from "./js/common.js";
 
     $(async () => {
@@ -80,7 +80,7 @@
     });
     const response = await getTopFivePlayers();
     if (response) {
-      $("#data").html(getTopRankHtml(response));
+      $("#data").html(getRankHtml(response));
       if (response.length != 0) {
         $("#data").on("click", ".accordion", event => {
           accordionEffect(event.currentTarget);

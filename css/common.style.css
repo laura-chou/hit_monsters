@@ -1,6 +1,9 @@
 :root {
-  --black: #000;
   --white: #FCFCFC;
+  --red: #ea5455;
+  --hp-red: #e74c3c;
+  --purple: #6F42C1;
+  --golden: #ffe44c;
 }
 
 body, html {
@@ -12,6 +15,10 @@ body, html {
 }
 
 .icon {
-  width: 30px;
+  width: 30px !important;
   margin-right: .5rem;
+}
+
+.swal2-confirm {
+  background-color: var(--purple) !important;
 }

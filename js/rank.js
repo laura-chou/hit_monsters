@@ -43,7 +43,7 @@ const getInfoHtml = (datas) => {
   return info;
 };
 
-export const getTopRankHtml = (data) => {
+export const getRankHtml = (data) => {
   const html = (data.length === 0) ? `<tr><td colspan="3">暫無玩家</td></tr>` : getInfoHtml(data);
   return `<table class="table">
             <thead>

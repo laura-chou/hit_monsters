@@ -17,6 +17,13 @@ export const convertToBool = (value) => {
   return value.toLowerCase() === "true" || value === "1";
 };
 
+export const isNullOrEmpty = (value) => {
+  if (value == null) {
+    return true;
+  }
+  return value.trim().length === 0;
+};
+
 export const accordionEffect = (element) => {
   element.classList.toggle("active");
   let state = "up";

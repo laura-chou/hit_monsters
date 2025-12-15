@@ -13,7 +13,7 @@
   <section id="start">
     <div class="player-info">
       <div class="level">
-        <span>關卡 1</span>
+        <span></span>
       </div>
       <div class="hp">
         <img class="icon" src="../images/heart.png">
@@ -83,7 +83,7 @@
     </div>
   </section>
   <div id="settle" class="d-none">
-    <span class="fs-3 m-5">下一關</span>
+    <span class="fs-3 m-5">準備迎戰</span>
     <div class="d-flex align-items-center entity">
       <div class="text-center">
         <div>
@@ -111,10 +111,14 @@
             <img class="icon" src="../images/claw.png">
             <span class="next monster-attack"></span>
           </div>
+          <div class="times">
+            <img class="next icon">
+            <span class="next monster-times"></span>
+          </div>
         </div>
       </div>
     </div>
-    <div class="reward-toggle m-5">
+    <div class="reward-toggle m-5 d-none">
       <input type="radio" id="reward-life" name="reward" checked>
       <label class="reward" for="reward-life">
         <img src="../images/heart.png">
@@ -127,15 +131,16 @@
         <span></span>
       </label>
     </div>
-    <button id="next-level" type="button" class="btn btn-danger fw-bold">GO</button>
+    <button id="next-level" type="button" class="btn btn-danger fw-bold mt-5">GO</button>
   </section>
 </body>
 <script src="../js/jquery-3.7.1.min.js"></script>
 <script src="../js/sweetalert2@11.js"></script>
 <script src="../js/bootstrap.bundle.min.js"></script>
+<script src="../js/confetti.browser.min.js"></script>
 <script type="module">
-  import { getRandomsNoConsecutive, getRewardData, redirectToHome, playAudioEffect } from "../js/common.js";
-  import { getTime, setPlayerInfo, getPlayerInfo, setLevelMonsters, setMonsterInfo, getMonsterInfo } from "../js/store.js";
+  import { getRandomsNoConsecutive, getRewardData, redirectToHome, playAudioEffect, isNullOrEmpty } from "../js/common.js";
+  import { getTime, setPlayerInfo, getPlayerInfo, setLevelMonsters, setMonsterInfo, getMonsterInfo, insertPlayer } from "../js/store.js";
   import { timeTo } from "../js/timer.js";
 
   let lockPlayer = true;
@@ -149,7 +154,6 @@
       setLevelMonsters();
       setPlayerInfo(getPlayerInfo());
       setMonsterInfo(null);
-      timeTo();
     }
     showPlayerInfo();
     showMonsterInfo();
@@ -164,7 +168,7 @@
 
   const monsterAction = () => {
     $(".monster-icon").addClass("monster-active");
-    appearIndex = getRandomsNoConsecutive(3, $(".head").length - 1);
+    appearIndex = getRandomsNoConsecutive(monsterInfo.times, $(".head").length - 1);
     appearIndex.forEach((idx, i) => {
       const appearTime = (i + 1) * 1000;
       const duration = 1000;
@@ -203,14 +207,14 @@
         if (appearIndex.every((val, idx) => val === selectIndex[idx])) {
           playAudioEffect("hit");
           $(".monster-icon").addClass("hit");
-          monsterInfo.life-=playerInfo.attack;
+          monsterInfo.currentLife-=playerInfo.currentAttack;
           setMonsterInfo(monsterInfo);
           showMonsterInfo();
         } else {
           playAudioEffect("monster");
           $(".monster-icon").addClass("monster-attack");
           setTimeout(() => {
-            playerInfo.life-=monsterInfo.attack;
+            playerInfo.currentLife-=monsterInfo.currentAttack;
             setPlayerInfo(playerInfo);
             showPlayerInfo();
           }, 500);
@@ -226,7 +230,7 @@
   });
 
   const checkGameOver = () => {
-    if (playerInfo.life === 0 || monsterInfo.life === 0) {
+    if (playerInfo.currentLife === 0 || monsterInfo.currentLife === 0) {
       timeTo("stop");
       if (isPlayerWin()) {
         if (playerInfo.rank === 3) {
@@ -245,12 +249,19 @@
             allowOutsideClick: false,
             confirmButtonText: "確定",
             preConfirm: (player) => {
-              if (player.trim() === "") {
+              if (isNullOrEmpty(player.trim())) {
                 return Swal.showValidationMessage("請輸入名字");
               }
             }
-          }).then((result) => {
-            redirectToHome();
+          }).then(async (result) => {
+            const response = await insertPlayer(result.value);
+            if (response) {
+              if (response.topFive) {
+                topFiveEffect();
+              }
+            } else {
+              serverError();
+            }
           });
         } else {
           playAudioEffect("level");
@@ -283,19 +294,64 @@
   }
 
   const isPlayerWin = () => {
-    return monsterInfo.life === 0;
+    return monsterInfo.currentLife === 0;
+  }
+
+  const topFiveEffect = () => {
+    Swal.fire({
+      imageUrl: "../images/scroll.png",
+      imageWidth: 80,
+      imageHeight: 80,
+      allowOutsideClick: false,
+      title: "恭喜！你的事蹟已進入前五名",
+      didOpen: () => {
+        const $canvas = $('<canvas>', { id: 'confetti-canvas' })
+          .css({
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            zIndex: 1
+          });
+
+        $('.swal2-container').append($canvas[0]);
+
+        const myConfetti = confetti.create($canvas[0], { resize: true });
+
+        myConfetti({
+          particleCount: 150,
+          startVelocity: 45,
+          spread: 90,
+          origin: { y: 0.6 },
+          colors: ['#FFD700', '#FF4500', '#FFFFFF'],
+          ticks: 500,
+          gravity: 0.8
+        });
+      },
+      confirmButtonText: "確定"
+    }).then((result) => {
+      redirectToHome();
+    });
+  }
+
+  const calcLifePercent = (currentLife, originLife) => {
+    return Math.max(0, Math.min(100, (currentLife / originLife) * 100));
   }
 
   const showMonsterInfo = (isNextLevel = false) => {
     monsterInfo = getMonsterInfo();
     if (isNextLevel) {
       $(".next.monster-icon").attr("src", `../images/monster${monsterInfo.id}.png`);
-      $(".next.monster-life").text(monsterInfo.life);
-      $(".next.monster-attack").text(monsterInfo.attack);
+      $(".next.monster-life").text(monsterInfo.currentLife);
+      $(".next.monster-attack").text(monsterInfo.currentAttack);
+      $(".next.icon").attr("src", `../images/monster${monsterInfo.id}.png`);
+      $(".next.monster-times").text(monsterInfo.times);
     } else {
-      $(".hp-bar.monster").css("width", `${monsterInfo.life}%`);
-      $(".hp-value.monster").text(monsterInfo.life);
-      $(".monster-attack").text(monsterInfo.attack);
+      const percent = calcLifePercent(monsterInfo.currentLife, monsterInfo.originLife);
+      $(".hp-bar.monster").css("width", `${percent}%`);
+      $(".hp-value.monster").text(monsterInfo.currentLife);
+      $(".monster-attack").text(monsterInfo.currentAttack);
       $(".monster-icon").attr("src", `../images/monster${monsterInfo.id}.png`);
     }
   }
@@ -305,9 +361,11 @@
     if (isNextLevel) {
       rewardPicked("life");
     } else {
-      $(".hp-bar.player").css("width", `${playerInfo.life}%`);
-      $(".hp-value.player").text(playerInfo.life);
-      $(".player-attack").text(playerInfo.attack);
+      $(".level span").text(`關卡 ${playerInfo.rank}`);
+      const percent = calcLifePercent(playerInfo.currentLife, playerInfo.originLife);
+      $(".hp-bar.player").css("width", `${percent}%`);
+      $(".hp-value.player").text(playerInfo.currentLife);
+      $(".player-attack").text(playerInfo.currentAttack);
     }
   }
 
@@ -333,14 +391,17 @@
         $(".next.player-attack").text(playerInfo.originAttack + reward.attack);
         break;
     }
+    if (reward.life > 0) {
+      $(".reward-toggle").removeClass("d-none")
+    }
   }
 
   $("#next-level").on("click", () => {
     const life = parseInt($(".next.player-life").text());
     const attack = parseInt($(".next.player-attack").text());
-    playerInfo.life = life;
+    playerInfo.currentLife = life;
     playerInfo.originLife = life;
-    playerInfo.attack = attack;
+    playerInfo.currentAttack = attack;
     playerInfo.originAttack = attack;
     playerInfo.settle = false;
     setPlayerInfo(playerInfo);
@@ -349,7 +410,7 @@
     showPlayerInfo();
     showMonsterInfo();
     monsterAction();
-    timeTo("start");
+    timeTo();
   });
 </script>
 </html>

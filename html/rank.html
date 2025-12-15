@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>勇者名錄</title>
+  <link rel="icon" type="image/png" href="../images/book.png">
+  <link rel="stylesheet" href="../css/fontawesome.min.css">
+  <link rel="stylesheet" href="../css/solid.min.css">
+  <link rel="stylesheet" href="../css/dataTables.bulma.css">
+  <link rel="stylesheet" href="../css/bulma.min.css">
+  <link rel="stylesheet" href="../css/dataTable.style.css">
+  <link rel="stylesheet" href="../css/common.style.css">
+  <link rel="stylesheet" href="../css/rank.style.css">
+</head>
+<body>
+  <section>
+    <div class="logo">
+      <img src="../images/book.png">
+    </div>
+    <div class="search mt-1">
+      <input id="search" type="text" autocomplete="off" placeholder="請輸入姓名">
+      <button id="clear">
+        <i class="fa-solid fa-x"></i>
+      </button>
+    </div>
+    <div id="rank">
+      <img class="load" src="../images/loading.svg">
+    </div>
+  </section>
+</body>
+<script src="../js/jquery-3.7.1.min.js"></script>
+<script src="../js/sweetalert2@11.js"></script>
+<script src="../js/fontawesome.min.js"></script>
+<script src="../js/dataTables.js"></script>
+<script src="../js/dataTables.bulma.js"></script>
+<script type="module">
+  import { accordionEffect, serverError, isNullOrEmpty } from "../js/common.js";
+  import { getRankHtml } from "../js/rank.js";
+  import { getAllPlayers } from "../js/store.js";
+
+  const initialDataTable = (emptyMsg = "暫無玩家") => {
+    $(".table").DataTable({
+      searching: false,
+      autoWidth: false,
+      ordering: false,
+      bLengthChange: false,
+      bInfo: false,
+      pageLength: 10,
+      columnDefs: [
+        {
+          targets: ["_all"],
+          className: "mdc-data-table__cell"
+        }
+      ],
+      language: {
+        paginate: {
+          first: "&#171;",
+          previous: "&#8249;",
+          next: "&#8250;",
+          last: "&#187;"
+        },
+        emptyTable: emptyMsg
+      }
+    });
+  };
+
+  const players = await getAllPlayers();
+  if (players) { 
+    $("#rank").html(getRankHtml(players));
+    initialDataTable();
+  } else {
+    serverError(false);
+  }
+
+  $("#rank").on("click", ".accordion", event => {
+    accordionEffect(event.currentTarget);
+  });
+
+  $("#search").on("change", () => {
+    if (!isNullOrEmpty($("#search").val())) {
+      const searchValue = $("#search").val();
+      const searchData = players.filter(item =>
+        item.players.some(p => p.includes(searchValue))
+      );
+      $("#rank").html(getRankHtml(searchData));
+      initialDataTable("查無玩家");
+    }
+  });
+
+
+  $("#clear").click(() => {
+    if (!isNullOrEmpty($("#search").val())) {
+      $("#search").val("");
+      $("#rank").html(getRankHtml(players));
+      initialDataTable();
+    }
+  });
+</script>
+</html>

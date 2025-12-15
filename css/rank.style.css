@@ -1,0 +1,110 @@
+html,body {
+  height: auto;
+  min-height: 100vh;
+  background-image: url("../images/rank-bg.png");
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+section {
+  padding: 0 20px;
+}
+
+.logo {
+  text-align: center;
+  margin: 10px 0 0 0;
+}
+
+.logo img {
+  width: 80px;
+}
+
+/* ---- pagenation ---- */
+.is-multiline:nth-child(1) {
+  display: none;
+}
+.is-multiline:nth-child(3) {
+  display: flex;
+  justify-content: center;
+}
+.is-multiline:nth-child(3) .is-narrow:nth-child(1) {
+  display: none;
+}
+.is-multiline:nth-child(3) .is-narrow:nth-child(2) {
+  margin-left: inherit !important;
+}
+.pagination-link {
+  font-weight: bold;
+  border-color: var(--light-gray);
+}
+
+/* ---- search ---- */
+.search {
+  display: flex;
+  justify-content: center;
+}
+
+input[type=text] {
+  width: 100%;
+  box-sizing: border-box;
+  border: 2px solid var(--light-gray);
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: var(--white);
+  background-image: url('../images/search.png');
+  background-position: 10px 10px;
+  background-repeat: no-repeat;
+  padding: 10px 20px 10px 40px;
+  transition: width 0.4s ease-in-out;
+  box-shadow: 1px 1px 10px var(--light-gray);
+}
+
+#clear {
+  border: 0;
+  border-radius: .25em;
+  background-color: var(--red);
+  color: var(--white);
+  font-size: 15px;
+  padding: 10px 20px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+#clear:hover{
+  filter: grayscale(10%);
+}
+
+.pagination-link.is-current {
+  background-color: var(--purple);
+  background-color: var(--purple);
+}
+
+/* ---- ranking ---- */
+#rank {
+  text-align: center;
+}
+
+.load {
+  margin-top: 10%;
+}
+
+@media (max-width: 450px) {
+  .logo img {
+    width: 60px;
+  }
+
+  input[type=text] {
+    font-size: 14px;
+  }
+
+  #clear {
+    font-size: 12px;
+  }
+}
+
+@media (orientation: portrait) {
+  html,body {
+    background-image: url("../images/mobile-rank-bg.png");
+  }
+}
