@@ -1,5 +1,3 @@
-import { pathName } from "./common.js";
-
 const getRank = (rank) => {
   return rank == 1 ? `<i class="fa-solid fa-crown crown"></i>` : rank;
 };
@@ -44,15 +42,14 @@ const getInfoHtml = (datas) => {
 };
 
 export const getRankHtml = (data) => {
-  const html = (data.length === 0) ? `<tr><td colspan="3">暫無玩家</td></tr>` : getInfoHtml(data);
   return `<table class="table">
             <thead>
               <tr>
                 <th>排名</th>
                 <th>時間</th>
-                <th>姓名</th>
+                <th>勇者</th>
               </tr>
             </thead>
-            <tbody>${html}</tbody>
+            <tbody>${getInfoHtml(data)}</tbody>
           </table>`;
 };

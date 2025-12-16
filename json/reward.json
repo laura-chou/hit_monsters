@@ -6,12 +6,22 @@
   },
   {
     "rank": 2,
+    "life": 20,
+    "attack": 6
+  },
+  {
+    "rank": 3,
+    "life": 25,
+    "attack": 8
+  },
+  {
+    "rank": 4,
     "life": 30,
     "attack": 10
   },
   {
-    "rank": 3,
-    "life": 40,
-    "attack": 10
+    "rank": 5,
+    "life": 35,
+    "attack": 12
   }
 ]

@@ -39,7 +39,7 @@
   import { getRankHtml } from "../js/rank.js";
   import { getAllPlayers } from "../js/store.js";
 
-  const initialDataTable = (emptyMsg = "暫無玩家") => {
+  const initialDataTable = (emptyMsg = "暫無勇者") => {
     $(".table").DataTable({
       searching: false,
       autoWidth: false,
@@ -84,10 +84,9 @@
         item.players.some(p => p.includes(searchValue))
       );
       $("#rank").html(getRankHtml(searchData));
-      initialDataTable("查無玩家");
+      initialDataTable("查無勇者");
     }
   });
-
 
   $("#clear").click(() => {
     if (!isNullOrEmpty($("#search").val())) {

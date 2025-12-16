@@ -47,7 +47,6 @@ export const setPlayerInfo = (data) => {
     playerInfo = {
       rank: 1,
       currentLife: 100,
-      currentAttack: 20,
       originLife: 100,
       originAttack: 20,
       settle: true
@@ -72,7 +71,6 @@ export const setMonsterInfo = (data) => {
     monsterInfo = {
       id: getMonsterId(data.rank),
       currentLife: data.life,
-      currentAttack: data.attack,
       originLife: data.life,
       originAttack: data.attack,
       times: data.times

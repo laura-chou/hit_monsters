@@ -10,6 +10,30 @@ const getPathName = () => {
 
 export const pathName = getPathName();
 
+const readJsonFile = async (url) => {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const monsterInfo = await readJsonFile(`${getPathName()}json/monsterInfo.json`);
+const rewardInfo = await readJsonFile(`${getPathName()}json/reward.json`);
+
+export const getMonsterData = (rank) => {
+  return monsterInfo.find(info => info.rank === parseInt(rank));
+};
+
+export const getRewardData = (rank) => {
+  return rewardInfo.find(info => info.rank === parseInt(rank));
+};
+
 export const convertToBool = (value) => {
   if (!value) {
     return false;
@@ -45,7 +69,7 @@ export const randNumberWithMin = (min, max) => {
 
 export const getRandomMonsters = () => {
   const nums = new Set();
-  while (nums.size < 3) {
+  while (nums.size < monsterInfo.length) {
     nums.add(randNumberWithMin(1, 6));
   }
   return [...nums];
@@ -67,30 +91,6 @@ export const playAudioEffect = (src) => {
   const audio = new Audio();
   audio.src = `${pathName}music/${src}.mp3`;
   audio.play();
-};
-
-const readJsonFile = async (url) => {
-  try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-const monsterInfo = await readJsonFile(`${getPathName()}json/monsterInfo.json`);
-const rewardInfo = await readJsonFile(`${getPathName()}json/reward.json`);
-
-export const getMonsterData = (rank) => {
-  return monsterInfo.find(info => info.rank === parseInt(rank));
-};
-
-export const getRewardData = (rank) => {
-  return rewardInfo.find(info => info.rank === parseInt(rank));
 };
 
 export const redirectToHome = () => {

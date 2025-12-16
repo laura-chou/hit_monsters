@@ -89,13 +89,13 @@ body {
 }
 
 .select-number {
-  width: 120px;
+  width: 125px;
   height: 40px;
   border: 2px solid var(--golden);
   border-radius: 8px; 
   padding: 5px;
   color: var(--white);
-  font-size: 24px;
+  font-size: 22px;
   font-weight: bold;
   text-align: center;
   margin-left: 50%;
@@ -197,7 +197,7 @@ table td:active {
 .reward-toggle label {
   background: #2c1f3a;
   color: var(--white);
-  padding: 10px 20px;
+  padding: 10px;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -213,6 +213,7 @@ table td:active {
   width: 115px;
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 
 .reward img {

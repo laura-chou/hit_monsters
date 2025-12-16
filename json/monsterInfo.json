@@ -2,16 +2,31 @@
   {
     "rank": 1,
     "life": 100,
-    "attack": 20
+    "attack": 20,
+    "times": 3
   },
   {
     "rank": 2,
-    "life": 200,
-    "attack": 30
+    "life": 140,
+    "attack": 25,
+    "times": 4
   },
   {
     "rank": 3,
-    "life": 300,
-    "attack": 40
+    "life": 180,
+    "attack": 30,
+    "times": 4
+  },
+  {
+    "rank": 4,
+    "life": 220,
+    "attack": 35,
+    "times": 5
+  },
+  {
+    "rank": 5,
+    "life": 260,
+    "attack": 40,
+    "times": 6
   }
 ]
