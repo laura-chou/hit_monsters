@@ -70,7 +70,7 @@
     $("#rank").html(getRankHtml(players));
     initialDataTable();
   } else {
-    serverError(false);
+    serverError();
   }
 
   $("#rank").on("click", ".accordion", event => {

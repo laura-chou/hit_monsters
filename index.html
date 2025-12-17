@@ -33,8 +33,8 @@
   import { connectServer, isPlayerExist, getTopFivePlayers, checkConnect } from "./js/store.js";
   import { getRankHtml } from "./js/rank.js";
   import { convertToBool, accordionEffect, serverError } from "./js/common.js";
-
-    $(async () => {
+  
+  $(async () => {
     if (isPlayerExist()) {
       $("#start").text("繼續");
     }

@@ -1,4 +1,3 @@
-
 body {
   background-image: url("../images/start-bg.png");
   background-size: cover;
@@ -25,30 +24,28 @@ body {
   align-items: center;
 }
 
-.player-info {
-  height: 20%;
-}
-
-.player-info,
-.monster-info,
-#settle {
-  width: 100%;
+.default-font {
   color: var(--white);
   font-size: 20px;
   font-weight: bold;
 }
 
-.level, .hp, .attack, .times {
+.info-block {
   display: flex;
   align-items: center;
   margin: 6px 10px 0 10px;
+}
+
+.player-info {
+  height: 20%;
+  width: 100%;
 }
 
 .hp-container {
   position: relative;
   width: 200px;
   height: 18px;
-  background: #555;
+  background: var(--hp-gray);
   border-radius: 8px;
 }
 
@@ -71,6 +68,7 @@ body {
 
 .monster-info {
   height: 25%;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -124,7 +122,7 @@ table td {
 }
 
 table td:active {
-  background-color:#ECF5FF;
+  background-color: var(--white);
 }
 
 .appear {
@@ -179,8 +177,8 @@ table td:active {
 }
 
 @keyframes appearEffect {
-  0% { transform: translateY(110%); }
-  50% { transform: translateY(0%); }
+  0%   { transform: translateY(110%); }
+  50%  { transform: translateY(0%); }
   100% { transform: translateY(110%); }
 }
 
@@ -195,7 +193,7 @@ table td:active {
 }
 
 .reward-toggle label {
-  background: #2c1f3a;
+  background: var(--dark-gray);
   color: var(--white);
   padding: 10px;
   border-radius: 8px;
@@ -205,7 +203,7 @@ table td:active {
 
 .reward-toggle input[type="radio"]:checked + label {
   background: var(--golden);
-  color: #000;
+  color: var(--dark-gray);
   font-weight: bold;
 }
 
@@ -223,6 +221,10 @@ table td:active {
 
 .swal2-image {
   margin-bottom: 0;
+}
+
+.nav-link.active {
+  background-color: var(--bs-indigo) !important;
 }
 
 @media (orientation: portrait) {

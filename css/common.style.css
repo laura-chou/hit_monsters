@@ -2,8 +2,11 @@
   --white: #FCFCFC;
   --red: #ea5455;
   --hp-red: #e74c3c;
+  --hp-gray: #555555;
   --purple: #6F42C1;
   --golden: #ffe44c;
+  --light-gray: #cccccc;
+  --dark-gray: #2c1f3a;
 }
 
 body, html {

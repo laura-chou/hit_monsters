@@ -1,6 +1,6 @@
 import { getMonsterData, getRandomMonsters, convertToBool } from "../js/common.js";
 
-const domain = "http://localhost:3000";
+const domain = "https://game-api.up.railway.app";
 const hitMonstersUrl = `${domain}/hit-monsters`;
 
 const setStoreItem = (key, value) => {

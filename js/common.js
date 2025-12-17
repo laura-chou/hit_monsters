@@ -70,7 +70,7 @@ export const randNumberWithMin = (min, max) => {
 export const getRandomMonsters = () => {
   const nums = new Set();
   while (nums.size < monsterInfo.length) {
-    nums.add(randNumberWithMin(1, 6));
+    nums.add(randNumberWithMin(1, 10));
   }
   return [...nums];
 }
@@ -87,18 +87,14 @@ export const getRandomsNoConsecutive = (count, max) => {
   return result;
 };
 
-export const playAudioEffect = (src) => {
-  const audio = new Audio();
-  audio.src = `${pathName}music/${src}.mp3`;
-  audio.play();
-};
-
-export const redirectToHome = () => {
+export const redirectToHome = (isRedirect = true) => {
   removeStorage();
-  window.location.href = pathName;
+  if (isRedirect) {
+    window.location.href = pathName;
+  }
 };
 
-export const serverError = async () => {
+export const serverError = async (isRedirect) => {
   await Swal.fire({
     icon: "error",
     title: "伺服器錯誤",
@@ -107,7 +103,8 @@ export const serverError = async () => {
     showConfirmButton: false,
     allowOutsideClick: false,
     willClose: () => {
-      redirectToHome()
+      sessionStorage.removeItem("connect");
+      redirectToHome(isRedirect)
     }
   });
 };

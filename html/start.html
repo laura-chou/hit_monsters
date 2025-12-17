@@ -11,34 +11,34 @@
 </head>
 <body onselectstart="return false">
   <section id="start">
-    <div class="player-info">
-      <div class="level">
+    <div class="player-info default-font">
+      <div class="info-block level">
         <span></span>
       </div>
-      <div class="hp">
+      <div class="info-block">
         <img class="icon" src="../images/heart.png">
         <div class="hp-container">
           <div class="hp-bar player"></div>
           <div class="hp-value player"></div>
         </div>
       </div>
-      <div class="attack">
+      <div class="info-block">
         <img class="icon" src="../images/punching.png">
         <span class="player-attack"></span>
         <div class="select-number"></div>
       </div>
     </div>
-    <div class="monster-info">
+    <div class="monster-info default-font">
       <img class="monster-icon">
       <div>
-        <div class="hp">
+        <div class="info-block">
           <img class="icon" src="../images/heart.png">
           <div class="hp-container">
             <div class="hp-bar monster"></div>
             <div class="hp-value monster"></div>
           </div>
         </div>
-        <div class="attack">
+        <div class="info-block">
           <img class="icon" src="../images/claw.png">
           <span class="monster-attack"></span>
         </div>
@@ -82,16 +82,16 @@
       </table>
     </div>
   </section>
-  <div id="settle" class="d-none">
-    <span class="fs-3 m-5">準備迎戰</span>
+  <div id="settle" class="d-none default-font">
+    <span class="title fs-3 m-5">準備迎戰</span>
     <div class="d-flex align-items-center entity">
       <div class="text-center">
         <div>
-          <div class="hp">
+          <div class="info-block">
             <img class="icon" src="../images/heart.png">
             <span class="next player-life"></span>
           </div>
-          <div class="attack">
+          <div class="info-block">
             <img class="icon" src="../images/punching.png">
             <span class="next player-attack"></span>
           </div>
@@ -103,15 +103,15 @@
       <div class="text-center">
         <img class="next monster-icon">
         <div>
-          <div class="hp">
+          <div class="info-block">
             <img class="icon" src="../images/heart.png">
             <span class="next monster-life"></span>
           </div>
-          <div class="attack">
+          <div class="info-block">
             <img class="icon" src="../images/claw.png">
             <span class="next monster-attack"></span>
           </div>
-          <div class="times">
+          <div class="info-block">
             <img class="next icon">
             <span class="next monster-times"></span>
           </div>
@@ -139,8 +139,9 @@
 <script src="../js/bootstrap.bundle.min.js"></script>
 <script src="../js/confetti.browser.min.js"></script>
 <script type="module">
-  import { getRandomsNoConsecutive, getRewardData, redirectToHome, playAudioEffect, isNullOrEmpty } from "../js/common.js";
+  import { getRandomsNoConsecutive, getRewardData, redirectToHome, isNullOrEmpty } from "../js/common.js";
   import { getTime, setPlayerInfo, getPlayerInfo, setLevelMonsters, setMonsterInfo, getMonsterInfo, insertPlayer } from "../js/store.js";
+  import { playAudioEffect, calcLifePercent, isPlayerWin, getGameRules } from "../js/start.js"
   import { timeTo } from "../js/timer.js";
 
   let lockPlayer = true;
@@ -163,6 +164,7 @@
       showPlayerInfo(true);
       showMonsterInfo(true);
     } else {
+      timeTo();
       monsterAction();
     }
   })
@@ -201,7 +203,7 @@
       selectIndex.push(parseInt($(event.target).attr("value")));
     }
     const showToPlayer = selectIndex.map(x => x + 1);
-    $(".select-number").text(showToPlayer.join(" "))
+    $(".select-number").text(showToPlayer.join(" "));
     if (selectIndex.length === appearIndex.length) {
       lockPlayer = true;
       setTimeout(() => {
@@ -222,25 +224,25 @@
         }
         setTimeout(() => {
           $(".monster-icon").removeClass("hit monster-attack");
-          $(".select-number").text("")
-          selectIndex.length = 0
+          $(".select-number").text("");
+          selectIndex.length = 0;
           checkGameOver();
-        }, 1500)
-      }, 1000)
+        }, 1500);
+      }, 1000);
     }
   });
 
   const checkGameOver = () => {
     if (playerInfo.currentLife === 0 || monsterInfo.currentLife === 0) {
       timeTo("stop");
-      if (isPlayerWin()) {
+      if (isPlayerWin(monsterInfo.currentLife)) {
         if (playerInfo.rank === 5) {
           playAudioEffect("complete");
           Swal.fire({
             imageUrl: "../images/book.png",
             imageWidth: 80,
             imageHeight: 80,
-            title: "勇者之名，銘刻史冊",
+            title: "勇者之名 銘刻史冊",
             html: `<span class="fs-5 fw-bold">通關時間 ${getTime()}</span>`,
             inputPlaceholder: "請輸入名字",
             input: "text",
@@ -257,9 +259,7 @@
           }).then(async (result) => {
             const response = await insertPlayer(result.value);
             if (response) {
-              if (response.topFive) {
-                topFiveEffect();
-              }
+              response.topFive ? topFiveEffect() : redirectToHome();
             } else {
               serverError();
             }
@@ -283,7 +283,7 @@
           imageWidth: 80,
           imageHeight: 80,
           allowOutsideClick: false,
-          title: "勇者殞落，黑暗再度蔓延",
+          title: "勇者殞落\n黑暗再度蔓延",
           confirmButtonText: "確定"
         }).then((result) => {
           redirectToHome();
@@ -294,10 +294,6 @@
     }
   }
 
-  const isPlayerWin = () => {
-    return monsterInfo.currentLife === 0;
-  }
-
   const topFiveEffect = () => {
     playAudioEffect("top");
     Swal.fire({
@@ -305,6 +301,7 @@
       imageWidth: 80,
       imageHeight: 80,
       allowOutsideClick: false,
+      confirmButtonText: "確定",
       title: "恭喜！你的事蹟已進入前五名",
       didOpen: () => {
         const $canvas = $("<canvas>", { id: "confetti-canvas" })
@@ -330,15 +327,10 @@
           ticks: 500,
           gravity: 0.8
         });
-      },
-      confirmButtonText: "確定"
+      }
     }).then((result) => {
       redirectToHome();
     });
-  }
-
-  const calcLifePercent = (currentLife, originLife) => {
-    return Math.max(0, Math.min(100, (currentLife / originLife) * 100));
   }
 
   const showMonsterInfo = (isNextLevel = false) => {
@@ -385,71 +377,52 @@
     $("#reward-attack").next("label").find("span").text(`+${reward.attack}`);
     switch (type) {
       case "life":
-        $("#reward-life").prop("checked", true)
+        $("#reward-life").prop("checked", true);
         $(".next.player-life").text(playerInfo.originLife + reward.life);
         $(".next.player-attack").text(playerInfo.originAttack);
         break;
       case "attack":
-        $("#reward-attack").prop("checked", true)
+        $("#reward-attack").prop("checked", true);
         $(".next.player-life").text(playerInfo.originLife);
         $(".next.player-attack").text(playerInfo.originAttack + reward.attack);
         break;
     }
     if (reward.life > 0) {
-      $(".reward-toggle").removeClass("d-none")
+      $(".reward-toggle").removeClass("d-none");
+      if (reward.rank === 5) {
+        $(".title").text("最終戰")
+      }
     } else {
       Swal.fire({
         confirmButtonText: "開始",
         allowOutsideClick: false,
         title: "遊玩方式",
-        html: `<div class="d-flex align-items-center justify-content-center">
-                <div class="text-start fw-bold me-5">
-                  <div>
-                    <img class="icon" src="../images/heart.png">
-                    生命值
-                  </div>
-                  <div>
-                    <img class="icon" src="../images/punching.png">
-                    你的攻擊力
-                  </div>
-                  <div>
-                    <img class="icon" src="../images/claw.png">
-                    怪獸攻擊力
-                  </div>
-                  <div>
-                    <img class="icon" src="../images/monster1.png">
-                    怪獸出現次數
-                  </div>
-                </div>
-                <img src="../images/teach.jpg" style="width:100px" />
-              </div>
-              <ul class="text-start mt-4">
-                <li>
-                  <strong>記住順序：</strong>
-                  怪獸會依照出現次數出現在九宮格內，例如：3 → 7 → 1
-                </li>
-                <li>
-                  <strong>依序點擊：</strong>
-                  怪獸出現後，按照順序點擊九宮格。
-                </li>
-                <li>
-                  <strong>正確攻擊：</strong>
-                  順序完全正確可攻擊怪獸一次。
-                </li>
-                <li>
-                  <strong>錯誤反擊：</strong>
-                  點錯順序會被怪獸攻擊一次。
-                </li>
-                <li>
-                  <strong>死亡重來：</strong>
-                  如果生命值歸零，遊戲將直接結束。
-                </li>
-              </ul>`
+        html: getGameRules()
       });
     }
   }
 
   $("#next-level").on("click", () => {
+    if (playerInfo.rank > 1) {
+      Swal.fire({
+        title: "確定要戰鬥了嗎?",
+        icon: "warning",
+        showCancelButton: true,
+        allowOutsideClick: false,
+        reverseButtons: true,
+        confirmButtonText: "確定",
+        cancelButtonText: "取消"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          setNextLevel();
+        }
+      });
+    } else {
+      setNextLevel();
+    }
+  });
+
+  const setNextLevel = () => {
     const life = parseInt($(".next.player-life").text());
     const attack = parseInt($(".next.player-attack").text());
     playerInfo.currentLife = life;
@@ -463,6 +436,6 @@
     showMonsterInfo();
     monsterAction();
     timeTo();
-  });
+  }
 </script>
 </html>

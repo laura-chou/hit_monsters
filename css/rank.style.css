@@ -1,6 +1,6 @@
 html,body {
-  height: auto;
-  min-height: 100vh;
+  margin: 0;
+  height: 100%;
   background-image: url("../images/rank-bg.png");
   background-size: 100% 100%;
   background-position: center;
@@ -8,6 +8,9 @@ html,body {
 }
 
 section {
+  height: 100vh;
+  overflow-x: hidden;
+  overflow-y: scroll;
   padding: 0 20px;
 }
 
@@ -36,6 +39,7 @@ section {
 }
 .pagination-link {
   font-weight: bold;
+  color: var(--light-gray);
   border-color: var(--light-gray);
 }
 
@@ -76,7 +80,7 @@ input[type=text] {
 }
 
 .pagination-link.is-current {
-  background-color: var(--purple);
+  border-color: var(--purple);
   background-color: var(--purple);
 }
 
