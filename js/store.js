@@ -93,6 +93,7 @@ export const removeStorage = () => {
   sessionStorage.removeItem("monster-info");
   sessionStorage.removeItem("level");
   sessionStorage.removeItem("time");
+  sessionStorage.removeItem("connect");
 };
 
 export const checkConnect = () => {

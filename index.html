@@ -80,7 +80,7 @@
     });
     const response = await getTopFivePlayers();
     if (response) {
-      $("#data").html(getRankHtml(response));
+      $("#data").html(getRankHtml(response, true));
       if (response.length != 0) {
         $("#data").on("click", ".accordion", event => {
           accordionEffect(event.currentTarget);

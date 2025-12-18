@@ -103,7 +103,6 @@ export const serverError = async (isRedirect) => {
     showConfirmButton: false,
     allowOutsideClick: false,
     willClose: () => {
-      sessionStorage.removeItem("connect");
       redirectToHome(isRedirect)
     }
   });

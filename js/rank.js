@@ -41,7 +41,15 @@ const getInfoHtml = (datas) => {
   return info;
 };
 
-export const getRankHtml = (data) => {
+export const getRankHtml = (data, isTop5 = false) => {
+  let html = "";
+
+  if (isTop5 && data.length === 0) {
+    html = "<tr><td colspan='3'>暫無勇者</td></tr>"
+  } else {
+    html = getInfoHtml(data)
+  }
+
   return `<table class="table">
             <thead>
               <tr>
@@ -50,6 +58,6 @@ export const getRankHtml = (data) => {
                 <th>勇者</th>
               </tr>
             </thead>
-            <tbody>${getInfoHtml(data)}</tbody>
+            <tbody>${html}</tbody>
           </table>`;
 };
