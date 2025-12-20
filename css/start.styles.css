@@ -75,6 +75,24 @@ body {
   flex-direction: column;
 }
 
+.monster-wrap {
+  transition: filter 0.3s ease;
+  will-change: filter;
+}
+
+.monster-wrap.monster-active {
+  filter: drop-shadow(0 0 10px rgba(0, 200, 255, 0.8));
+}
+
+.monster-icon {
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.monster-wrap.monster-active .monster-icon {
+  transform: scale(1.05);
+}
+
 .monster-icon {
   width: 90px;
   margin-bottom: 10px;
@@ -90,13 +108,13 @@ body {
   width: 125px;
   height: 40px;
   border: 2px solid var(--golden);
-  border-radius: 8px; 
-  padding: 5px;
+  border-radius: 8px;
+  padding: 3px 5px;
   color: var(--white);
   font-size: 22px;
   font-weight: bold;
   text-align: center;
-  margin-left: 50%;
+  margin-left: 47%;
 }
 
 .playground {
@@ -230,9 +248,5 @@ table td:active {
 @media (orientation: portrait) {
   body {
     background-image: url("../images/mobile-start-bg.png");
-  }
-
-  section {
-    width: 100%;
   }
 }

@@ -29,7 +29,9 @@
       </div>
     </div>
     <div class="monster-info default-font">
-      <img class="monster-icon">
+      <div class="monster-wrap">
+        <img class="monster-icon">
+      </div>
       <div>
         <div class="info-block">
           <img class="icon" src="../images/heart.png">
@@ -151,6 +153,9 @@
   let monsterInfo = {};
 
   $(() => {
+    // Safari/iOS requires a touchstart listener to properly trigger CSS :active state on elements
+    document.addEventListener("touchstart", () => {}, {passive: true});
+
     if (getMonsterInfo() === null) {
       setLevelMonsters();
       setPlayerInfo(getPlayerInfo());
