@@ -179,7 +179,7 @@
     appearIndex = getRandomsNoConsecutive(monsterInfo.times, $(".head").length - 1);
     appearIndex.forEach((idx, i) => {
       const appearTime = (i + 1) * 1000;
-      const duration = 1000;
+      const duration = 900;
 
       setTimeout(() => {
         playAudioEffect("swoosh");
